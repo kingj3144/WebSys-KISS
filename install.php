@@ -62,6 +62,12 @@
 				throw new Exception("Not connected to the database");
 			}
 		}
+
+		public addUser($name, $password) {}
+
+		private hashPassword($password) {}
+
+		private createSalt() {}
 	}
 
 ?>

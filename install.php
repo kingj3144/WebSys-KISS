@@ -26,7 +26,7 @@
 						"; DEFAULT COLLATE utf8_unicode_ci");
 					$conn->query("USE " . $config['db_name'] . $config['db_versioin']);
 					$conn->exec("CREATE TABLE IF NOT EXISTS users (name VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL)");
-					$conn->exec("CREATE TABLE IF NOT EXISTS salts ()");
+					$conn->exec("CREATE TABLE IF NOT EXISTS salts (name VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL)");
 					$conn->exec("CREATE TABLE IF NOT EXISTS items ()");
 					
 				} catch(PDOException $e) {
@@ -37,7 +37,7 @@
 			}
 		}
 
-		/** Getsa user from the user database
+		/** Gets a user from the user table
 		  * @param $name - name of the user to find
 		  * @return - the query result 
 		  */
@@ -45,6 +45,19 @@
 			if ($conn != NULL) {
 				$user = $conn->query("SELECT * FROM users WHERE name=$name LIMIT 1");
 				return $user;
+			} else {
+				throw new Exception("Not connected to the database");
+			}
+		}
+
+		/** Gets a salt from the salt table
+		  * @param $name - name of the user to find
+		  * @return - the query result 
+		  */
+		public getSaltByUser($name) {
+			if ($conn != NULL) {
+				$salt = $conn->query("SELECT * FROM salts WHERE name=$name LIMIT 1");
+				return $salt;
 			} else {
 				throw new Exception("Not connected to the database");
 			}

@@ -6,8 +6,7 @@
 	{
 		private $conn = NULL;
 
-		/**
-		  * Connects to the mySql server
+		/** Connects to the mySql server
 		  */
 		public funtion connect() {
 			try {
@@ -17,8 +16,7 @@
 			}
 		}
 
-		/**
-		  * Sets up the database and tables if they do not already exisit
+		/** Sets up the database and tables if they do not already exisit
 		  */
 		public init() {
 			if ($conn != NULL) {
@@ -27,13 +25,28 @@
 					$conn->query("CREATE DATABASE IF NOT EXISTS" . $config['db_name'] . $config['db_versioin'] . 
 						"; DEFAULT COLLATE utf8_unicode_ci");
 					$conn->query("USE " . $config['db_name'] . $config['db_versioin']);
-					$conn->exec("CREATE TABLE IF NOT EXISTS users ()");
+					$conn->exec("CREATE TABLE IF NOT EXISTS users (name VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL)");
 					$conn->exec("CREATE TABLE IF NOT EXISTS salts ()");
 					$conn->exec("CREATE TABLE IF NOT EXISTS items ()");
 					
 				} catch(PDOException $e) {
 					echo 'ERROR: ' . $e->getmessage();
 				}
+			} else {
+				throw new Exception("Not connected to the database");
+			}
+		}
+
+		/** Getsa user from the user database
+		  * @param $name - name of the user to find
+		  * @return - the query result 
+		  */
+		public getUserByName($name) {
+			if ($conn != NULL) {
+				$user = $conn->query("SELECT * FROM users WHERE name=$name LIMIT 1");
+				return $user;
+			} else {
+				throw new Exception("Not connected to the database");
 			}
 		}
 	}

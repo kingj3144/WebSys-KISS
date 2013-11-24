@@ -1,6 +1,12 @@
 <?php 
 	class KissDatabase
 	{
+		const DATABASE_CONNECTION_ERROR = "Not connected to the database";
+		const SALT_CREATION_ERROR = "Salt could not be created";
+		const USER_NOT_FOUND_ERROR = "User could not be found";
+		const USER_NOT_DELTED_ERROR = "User could not be deleted";
+		const SALT_NOT_FOUND_ERROR = "Salt could not be found";
+		const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 
 		private $conn = NULL;
 
@@ -39,7 +45,7 @@
 					echo 'ERROR: ' . $e->getmessage();
 				}
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 
@@ -53,7 +59,7 @@
 				$user = $this->conn->query("SELECT * FROM users WHERE username=$name LIMIT 1");
 				return $user;
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 
@@ -70,7 +76,7 @@
 					echo 'ERROR: ' . $e->getmessage();
 				}
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 
@@ -88,13 +94,13 @@
 						//TO DO: user name needs to be escaped of special characters
 						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
 					} else {
-						throw new Exception("Salt could not be created");
+						throw new Exception(SALT_CREATION_ERROR);
 					}
 				} catch(PDOException $e) {
 					echo 'ERROR: ' . $e->getmessage();
 				}
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 
@@ -137,27 +143,30 @@
 							return false;
 						}
 					} else {
-						throw new Exception("User could not be found");
+						throw new Exception(USER_NOT_FOUND_ERROR);
 					}
 				} else {
-					throw new Exception("Salt could not be found");
+					throw new Exception(SALT_NOT_FOUND_ERROR);
 				}
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 
+		/** Function removes a user and their associated salt from the database
+		  * @param $username - the username of the uesr to be removed
+		  */
 		public function removeUser($username) {
 			if ($this->conn != NULL) {
 				if ($this->conn->exec("DELETE FROM users WHERE username='$username'") != 0) {
 					if ($this->conn->exec("DELETE FROM salts WHERE username='$username'") == 0) {
-						throw new Exception("Could not delete user salt");
+						throw new Exception(SALT_NOT_DELTED_ERROR);
 					}
 				} else {
-					throw new Exception("Could not delte user");
+					throw new Exception(USER_NOT_DELTED_ERROR);
 				}
 			} else {
-				throw new Exception("Not connected to the database");
+				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
 	}

@@ -46,6 +46,7 @@
 		/** Gets a user from the user table
 		  * @param $name - name of the user to find
 		  * @return - the query result 
+			* This can be used to verify the initial status of a login part 1)
 		  */
 		public function getUserByName($name) {
 			if ($this->conn != NULL) {
@@ -76,6 +77,7 @@
 		/** Adds a new user to the database
 		  * @param $name - the name of the new users as a string
 		  * @param $passworf - the users password as a plaintext string
+			* This will be used to generate a new user on the signup page
 		  */
 		public function addUser($username, $password, $name="", $email="") {
 			if ($this->conn != NULL) {
@@ -96,7 +98,7 @@
 			}
 		}
 
-		/** Hashes the plaintext passord with the gicen salt
+		/** Hashes the plaintext passord with the given salt
 		  * @param $password - as a plaintext string
 		  * @param - $salt Blowfish salt 
 		  * @return - the hashed password

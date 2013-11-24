@@ -31,8 +31,8 @@
 					$this->conn->query("CREATE DATABASE IF NOT EXISTS " . $this->config['db_name'] . $this->config['db_version'] . 
 						" DEFAULT COLLATE utf8_unicode_ci");
 					$this->conn->query("USE " . $this->config['db_name'] . $this->config['db_version']);
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (name VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (name VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (username VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL, name VARCHAR(32), email VARCHAR(32)) COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (username VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS items () COLLATE utf8_unicode_ci");
 					
 				} catch(PDOException $e) {
@@ -46,10 +46,11 @@
 		/** Gets a user from the user table
 		  * @param $name - name of the user to find
 		  * @return - the query result 
+			* This can be used to verify the initial status of a login part 1)
 		  */
 		public function getUserByName($name) {
 			if ($this->conn != NULL) {
-				$user = $this->conn->query("SELECT * FROM users WHERE name=$name LIMIT 1");
+				$user = $this->conn->query("SELECT * FROM users WHERE username=$name LIMIT 1");
 				return $user;
 			} else {
 				throw new Exception("Not connected to the database");
@@ -63,7 +64,7 @@
 		public function getSaltByUser($name) {
 			if ($this->conn != NULL) {
 				try {	
-					$salt = $this->conn->query("SELECT * FROM salts WHERE name=$name LIMIT 1");
+					$salt = $this->conn->query("SELECT * FROM salts WHERE username=$name LIMIT 1");
 					return $salt;
 				} catch(PDOException $e) {
 					echo 'ERROR: ' . $e->getmessage();
@@ -76,15 +77,16 @@
 		/** Adds a new user to the database
 		  * @param $name - the name of the new users as a string
 		  * @param $passworf - the users password as a plaintext string
+			* This will be used to generate a new user on the signup page
 		  */
-		public function addUser($name, $password) {
+		public function addUser($username, $password, $name="", $email="") {
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
-					if($this->conn->exec("INSERT INTO salts (name, salt) VALUES ('$name', '$salt');") != 0) {
+					if($this->conn->exec("INSERT INTO salts (username, salt) VALUES ('$username', '$salt');") != 0) {
 						$hash = $this->hashPassword($password, $salt);
 						//TO DO: user name needs to be escaped of special characters
-						$this->conn->query("INSERT INTO `users` (`name`, `password`) VALUES ('$name', '$hash');");
+						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
 					} else {
 						throw new Exception("Salt could not be created");
 					}
@@ -96,7 +98,7 @@
 			}
 		}
 
-		/** Hashes the plaintext passord with the gicen salt
+		/** Hashes the plaintext passord with the given salt
 		  * @param $password - as a plaintext string
 		  * @param - $salt Blowfish salt 
 		  * @return - the hashed password
@@ -120,22 +122,18 @@
 
 		public function verifyUser($user, $password) {
 			if ($this->conn != NULL) {
-				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE name='$user'") as $return) {
+				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE username='$user'") as $return) {
 					$salt = $return['salt'];
 				}
 				if (isset($salt)) {
-					echo "Salt " . $salt . "<br>";
-					foreach ($this->conn->query("SELECT * FROM `users` WHERE name='$user'") as $return) {
+					foreach ($this->conn->query("SELECT * FROM `users` WHERE username='$user'") as $return) {
 						$hashPassword = $return['password'];
 					}
 					if (isset($hashPassword)) {
-						echo "HashPassword " . $hashPassword . "<br>";
 						$newhashPassword = $this->hashPassword($password, $salt);
 						if ($newhashPassword == $hashPassword) {
-							echo "Verified <br>";
 							return true;
 						} else {
-							echo "Not Verified <br>";
 							return false;
 						}
 					} else {

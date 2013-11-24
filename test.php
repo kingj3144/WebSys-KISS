@@ -6,7 +6,7 @@
 	//config.php is a file that will contain the information needed to connect to the database
 	try {
 		$db = new KissDatabase($config);
-		// $db->addUser("Jonah", "Password");
+		$db->addUser("Jonah", "Password");
 		echo $db->verifyUser("Jonah", "Password");
 	} catch(PDOException $e) {
 		echo 'ERROR: ' . $e->getmessage();

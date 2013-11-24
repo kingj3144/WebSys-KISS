@@ -83,7 +83,7 @@
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
-					if($this->conn->exec("INSERT INTO salts (username, salt) VALUES ('$username', '$salt');") != 0) {
+					if($this->conn->exec("INSERT INTO `salts` (`username`, `salt`) VALUES ('$username', '$salt')") != 0) {
 						$hash = $this->hashPassword($password, $salt);
 						//TO DO: user name needs to be escaped of special characters
 						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
@@ -141,6 +141,20 @@
 					}
 				} else {
 					throw new Exception("Salt could not be found");
+				}
+			} else {
+				throw new Exception("Not connected to the database");
+			}
+		}
+
+		public function removeUser($username) {
+			if ($this->conn != NULL) {
+				if ($this->conn->exec("DELETE FROM users WHERE username='$username'") != 0) {
+					if ($this->conn->exec("DELETE FROM salts WHERE username='$username'") == 0) {
+						throw new Exception("Could not delete user salt");
+					}
+				} else {
+					throw new Exception("Could not delte user");
 				}
 			} else {
 				throw new Exception("Not connected to the database");

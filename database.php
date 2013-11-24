@@ -117,6 +117,37 @@
 		    }
 		    return sprintf('$2a$%02d$', $rounds) . $salt;
 		}
+
+		public function verifyUser($user, $password) {
+			if ($this->conn != NULL) {
+				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE name='$user'") as $return) {
+					$salt = $return['salt'];
+				}
+				if (isset($salt)) {
+					echo "Salt " . $salt . "<br>";
+					foreach ($this->conn->query("SELECT * FROM `users` WHERE name='$user'") as $return) {
+						$hashPassword = $return['password'];
+					}
+					if (isset($hashPassword)) {
+						echo "HashPassword " . $hashPassword . "<br>";
+						$newhashPassword = $this->hashPassword($password, $salt);
+						if ($newhashPassword == $hashPassword) {
+							echo "Verified <br>";
+							return true;
+						} else {
+							echo "Not Verified <br>";
+							return false;
+						}
+					} else {
+						throw new Exception("User could not be found");
+					}
+				} else {
+					throw new Exception("Salt could not be found");
+				}
+			} else {
+				throw new Exception("Not connected to the database");
+			}
+		}
 	}
 
 ?>

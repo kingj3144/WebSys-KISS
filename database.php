@@ -81,14 +81,13 @@
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
-					echo $this->conn->exec("INSERT INTO salts (name, salt) VALUES ($name, $salt);");
-					// if($this->conn->exec("INSERT INTO salts (name, password) VALUES ($name, $salt);")) {
-					// 	$hash = hashPassword($password, $salt);
-					// 	//TO DO: user name needs to be escaped of special characters
-					// 	$this->conn->query("INSERT INTO `users` (`name`, `password`) VALUES ($name, $hash);");
-					// } else {
-					// 	throw new Exception("Salt could not be created");
-					// }
+					if($this->conn->exec("INSERT INTO salts (name, salt) VALUES ('$name', '$salt');") != 0) {
+						$hash = $this->hashPassword($password, $salt);
+						//TO DO: user name needs to be escaped of special characters
+						$this->conn->query("INSERT INTO `users` (`name`, `password`) VALUES ('$name', '$hash');");
+					} else {
+						throw new Exception("Salt could not be created");
+					}
 				} catch(PDOException $e) {
 					echo 'ERROR: ' . $e->getmessage();
 				}

@@ -7,10 +7,12 @@ database structure:
 
 users:
 name
+username
+email
 password
 
 salts:
-name
+name (foreign key)
 salt
 
 list:

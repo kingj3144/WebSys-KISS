@@ -31,7 +31,7 @@
 					$this->conn->query("CREATE DATABASE IF NOT EXISTS " . $this->config['db_name'] . $this->config['db_version'] . 
 						" DEFAULT COLLATE utf8_unicode_ci");
 					$this->conn->query("USE " . $this->config['db_name'] . $this->config['db_version']);
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (name VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (username VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL, name VARCHAR(32), email VARCHAR(32)) COLLATE utf8_unicode_ci");
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (name VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS items () COLLATE utf8_unicode_ci");
 					
@@ -49,7 +49,7 @@
 		  */
 		public function getUserByName($name) {
 			if ($this->conn != NULL) {
-				$user = $this->conn->query("SELECT * FROM users WHERE name=$name LIMIT 1");
+				$user = $this->conn->query("SELECT * FROM users WHERE username=$name LIMIT 1");
 				return $user;
 			} else {
 				throw new Exception("Not connected to the database");
@@ -77,14 +77,14 @@
 		  * @param $name - the name of the new users as a string
 		  * @param $passworf - the users password as a plaintext string
 		  */
-		public function addUser($name, $password) {
+		public function addUser($username, $password, $name="", $email="") {
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
 					if($this->conn->exec("INSERT INTO salts (name, salt) VALUES ('$name', '$salt');") != 0) {
 						$hash = $this->hashPassword($password, $salt);
 						//TO DO: user name needs to be escaped of special characters
-						$this->conn->query("INSERT INTO `users` (`name`, `password`) VALUES ('$name', '$hash');");
+						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
 					} else {
 						throw new Exception("Salt could not be created");
 					}

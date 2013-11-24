@@ -32,7 +32,7 @@
 						" DEFAULT COLLATE utf8_unicode_ci");
 					$this->conn->query("USE " . $this->config['db_name'] . $this->config['db_version']);
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (username VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL, name VARCHAR(32), email VARCHAR(32)) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (name VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (username VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS items () COLLATE utf8_unicode_ci");
 					
 				} catch(PDOException $e) {
@@ -64,7 +64,7 @@
 		public function getSaltByUser($name) {
 			if ($this->conn != NULL) {
 				try {	
-					$salt = $this->conn->query("SELECT * FROM salts WHERE name=$name LIMIT 1");
+					$salt = $this->conn->query("SELECT * FROM salts WHERE username=$name LIMIT 1");
 					return $salt;
 				} catch(PDOException $e) {
 					echo 'ERROR: ' . $e->getmessage();
@@ -83,7 +83,7 @@
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
-					if($this->conn->exec("INSERT INTO salts (name, salt) VALUES ('$name', '$salt');") != 0) {
+					if($this->conn->exec("INSERT INTO salts (username, salt) VALUES ('$username', '$salt');") != 0) {
 						$hash = $this->hashPassword($password, $salt);
 						//TO DO: user name needs to be escaped of special characters
 						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
@@ -122,12 +122,12 @@
 
 		public function verifyUser($user, $password) {
 			if ($this->conn != NULL) {
-				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE name='$user'") as $return) {
+				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE username='$user'") as $return) {
 					$salt = $return['salt'];
 				}
 				if (isset($salt)) {
 					echo "Salt " . $salt . "<br>";
-					foreach ($this->conn->query("SELECT * FROM `users` WHERE name='$user'") as $return) {
+					foreach ($this->conn->query("SELECT * FROM `users` WHERE username='$user'") as $return) {
 						$hashPassword = $return['password'];
 					}
 					if (isset($hashPassword)) {

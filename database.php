@@ -126,18 +126,14 @@
 					$salt = $return['salt'];
 				}
 				if (isset($salt)) {
-					echo "Salt " . $salt . "<br>";
 					foreach ($this->conn->query("SELECT * FROM `users` WHERE username='$user'") as $return) {
 						$hashPassword = $return['password'];
 					}
 					if (isset($hashPassword)) {
-						echo "HashPassword " . $hashPassword . "<br>";
 						$newhashPassword = $this->hashPassword($password, $salt);
 						if ($newhashPassword == $hashPassword) {
-							echo "Verified <br>";
 							return true;
 						} else {
-							echo "Not Verified <br>";
 							return false;
 						}
 					} else {

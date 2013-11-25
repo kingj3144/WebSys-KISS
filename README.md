@@ -12,15 +12,20 @@ email
 password
 
 salts:
-name (foreign key)
+user (foreign key)
 salt
 
 list:
 user (foreign key)
-item (foreign key)
+item 
+listId
 category
+orderNumber/timestamp
 
-items:
-name
-type
-picture?
+listAccess:
+username (foreign key)
+listId
+
+Ownership:
+user (foreign key)
+listId

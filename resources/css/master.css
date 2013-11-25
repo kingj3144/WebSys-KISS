@@ -1,0 +1,19 @@
+/* Master style sheet for the KISS project. */
+.button {
+		background-color: #8f6dce;
+}
+body {
+		background-image: url('images/wood-grain2.jpg');
+		background-size: 100%;
+}
+.sign-in {
+		float: left;
+		margin-left: 30%;
+		margin-top: 5%;
+		display: inline-block;
+}
+.sign-up {
+		float: left;
+		margin-top: 5%;
+		margin-left: 2%;
+}

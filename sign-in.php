@@ -3,7 +3,7 @@
   //  do either action. Note that the idea as of now is to build this modularly so that we can make
   //  a single page and simply render each php file as needed. This might change in the future.
   
-  require 'install.php';
+  require 'database.php';
 	
 	
 	
@@ -32,7 +32,9 @@
   </head>
 
   <body>
+		<img src="resources/css/images/fullName.png" class="masthead" alt="Kitchen Inventory Supply System" />
 		<div class="sign-in">
+			
     	<div class="container">
 
       <form class="form-signin" method="post">
@@ -62,6 +64,8 @@
 
     </div>
 		</div>
-
+		<footer>
+			<img src="resources/css/images/logo.png" class="logo" />
+		</footer>
   </body>
 </html>

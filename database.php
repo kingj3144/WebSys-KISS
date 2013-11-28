@@ -6,6 +6,7 @@
 	const SALT_NOT_FOUND_ERROR = "Salt could not be found";
 	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 	const LIST_CREATION_ERROR = "List could not be created";
+	const LIST_DELETE_ERROR = "List could not be deleted";
 	class KissDatabase
 	{
 
@@ -237,17 +238,7 @@
 					}
 				} else {
 					$query->execute();
-					$query = $this->conn->prepare("SELECT listid FROM `lists` WHERE `name`='$listname' and `username`='$username';");
-					if(!$query){
-						if($this->config['debug'] = 'on'){
-							throw new Exception($query->errorInfo());
-						}else{
-							throw new Exception(LIST_CREATION_ERROR);
-						}
-					} else {
-						$query->execute();
-						return $query->fetch()['listid'];
-					}
+					return $this->getListByName($username, $listname);
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -261,15 +252,32 @@
 					if($this->config['debug'] = 'on'){
 						throw new Exception($query->errorInfo());
 					}else{
-						throw new Exception(LIST_CREATION_ERROR);
+						throw new Exception(LIST_DELETE_ERROR);
 					}
 				} else {
 					$query->execute();
-					// return $query->fetch();
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
+		}
+
+		public function getListByName($username, $listname) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT listid FROM `lists` WHERE `name`='$listname' and `username`='$username';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_CREATION_ERROR);
+					}
+				} else {
+					$query->execute();
+					return $query->fetch()['listid'];
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
 		}
 	}
 

@@ -22,6 +22,12 @@
 		echo "Adding new list <br>";
 		$listid = $db->newList("Jonah", "Groceries");
 
+		if($listid != $db->getListByName("Jonah", "Groceries")){
+			throw new Exception("Failed to get list");
+		} else {
+			echo "Get list successful<br>";
+		}
+
 		echo "Removing list <br>";
 		$db->deleteList($listid);
 

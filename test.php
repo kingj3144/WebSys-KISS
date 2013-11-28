@@ -19,8 +19,16 @@
 		} else {
 			echo "Improper verification denied <br>";
 		}
+		echo "Adding new list <br>";
+		$listid = $db->newList("Jonah", "Groceries");
+
+		echo "Removing list <br>";
+		$db->deleteList($listid);
+
+		echo "Removing user <br>";	
 		$db->removeUser("Jonah");
 		echo "User remvoed<br>";
+
 
 		$db->close();
 		echo "Test Complete <br>";

@@ -5,6 +5,7 @@
 	const USER_NOT_DELTED_ERROR = "User could not be deleted";
 	const SALT_NOT_FOUND_ERROR = "Salt could not be found";
 	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
+	const LIST_CREATION_ERROR = "List could not be created";
 	class KissDatabase
 	{
 
@@ -61,7 +62,7 @@
 					// 	FOREIGN KEY (username) REFERENCES users(username)
 					// 	) COLLATE utf8_unicode_ci");
 
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS list (
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listitems (
 						username VARCHAR(32),
 						item VARCHAR(64) NOT NULL,
 						listid INT NOT NULL,
@@ -70,15 +71,16 @@
 						FOREIGN KEY(username) REFERENCES users(username)
 						) COLLATE utf8_unicode_ci");
 
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS listAccess ( 
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
 						username VARCHAR(32),
 						listid INT NOT NULL,
 						FOREIGN KEY(username) REFERENCES users(username)
 						) COLLATE utf8_unicode_ci");
 
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS ownership (
-						username VARCHAR(32) NOT NULL PRIMARY KEY,
-						listid INT NOT NULL,
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS lists (
+						listid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+						name VARCHAR(32) NOT NULL,
+						username VARCHAR(32) NOT NULL,
 						FOREIGN KEY(username) REFERENCES users(username)
 						) COLLATE utf8_unicode_ci");
 					
@@ -224,9 +226,47 @@
 			}
 		}
 
-		public function newList($username, $list) {
+		public function newList($username, $listname) {
 			if ($this->conn != NULL) {
-				
+				$query = $this->conn->prepare("INSERT INTO `lists` (`name`, `username`) VALUES ('$listname', '$username');");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_CREATION_ERROR);
+					}
+				} else {
+					$query->execute();
+					$query = $this->conn->prepare("SELECT listid FROM `lists` WHERE `name`='$listname' and `username`='$username';");
+					if(!$query){
+						if($this->config['debug'] = 'on'){
+							throw new Exception($query->errorInfo());
+						}else{
+							throw new Exception(LIST_CREATION_ERROR);
+						}
+					} else {
+						$query->execute();
+						return $query->fetch()['listid'];
+					}
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function deletelist($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("DELETE FROM `lists` WHERE `listid`='$listid';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_CREATION_ERROR);
+					}
+				} else {
+					$query->execute();
+					// return $query->fetch();
+				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}

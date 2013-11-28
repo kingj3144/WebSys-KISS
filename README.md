@@ -15,18 +15,18 @@ salts:
 user (foreign key)
 salt
 
-list:
+listitems:
 user (foreign key)
 item 
 listId
 category
 orderNumber/timestamp
 
-listAccess:
+listaccess:
 username (foreign key)
 listId
 
-Ownership:
+ownership:
 username (foreign key)
 name
 listId

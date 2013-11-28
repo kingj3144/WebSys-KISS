@@ -23,8 +23,13 @@
 		public function connect() {
 			try {
 	  			$this->conn = new PDO('mysql:host='.$this->config['host'],$this->config['db_username'], $this->config['db_password']);
+				throw new PDOException("THIS IS A TEST");
 			} catch(PDOException $e) {
-				echo 'ERROR: ' . $e->getmessage();
+				if ($this->config['debug'] == 'on') {
+					echo 'ERROR: ' . $e->getmessage();
+				} else {
+					throw $e;
+				}
 			}
 		}
 
@@ -37,12 +42,41 @@
 					$this->conn->query("CREATE DATABASE IF NOT EXISTS " . $this->config['db_name'] . $this->config['db_version'] . 
 						" DEFAULT COLLATE utf8_unicode_ci");
 					$this->conn->query("USE " . $this->config['db_name'] . $this->config['db_version']);
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (username VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL, name VARCHAR(32), email VARCHAR(32)) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (username VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS items () COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (
+						username VARCHAR(32) PRIMARY KEY NOT NULL, 
+						password VARCHAR(64) NOT NULL, 
+						name VARCHAR(32), 
+						email VARCHAR(32)
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (username VARCHAR(32) PRIMARY KEY NOT NULL, 
+						salt VARCHAR(64) NOT NULL
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS list (
+						user VARCHAR(32),
+						item VARCHAR(64) NOT NULL,
+						listid INT NOT NULL,
+						category VARCHAR(32),
+						time DATETIME NOT NULL
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listAccess ( 
+						username VARCHAR(32),
+						listid INT NOT NULL
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS ownership (
+						user VARCHAR(32) NOT NULL PRIMARY KEY,
+						listid INT NOT NULL
+						) COLLATE utf8_unicode_ci");
 					
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -73,7 +107,11 @@
 					$salt = $this->conn->query("SELECT * FROM salts WHERE username=$name LIMIT 1");
 					return $salt;
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -97,7 +135,11 @@
 						throw new Exception(SALT_CREATION_ERROR);
 					}
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);

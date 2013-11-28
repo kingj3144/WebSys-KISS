@@ -4,9 +4,10 @@
   $config = array(
     'host'        => 'localhost',
     'db_name'     => 'Websys7_kiss',
-    'db_username' => 'root',
+    'db_username' => 'rooot',
     'db_password' => '',
     'db_version'  => '_v1',
+    'debug'		  => 'on',
   );
   
 ?>

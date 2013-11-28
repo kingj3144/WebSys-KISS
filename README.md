@@ -27,5 +27,6 @@ username (foreign key)
 listId
 
 Ownership:
-user (foreign key)
+username (foreign key)
+name
 listId

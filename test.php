@@ -37,7 +37,10 @@
 			throw new Exception("List Access failed");
 		}
 
+		$db->addItemToList("Jonah", "Apples", $listid, "fruit");
+		$db->removeItemFromList("Apples", $listid);
 		$db->removeUserAccess($listid, "Jon");
+		$db->removeUserAccess($listid, "Jonah");
 
 		echo "Removing list <br>";
 		$db->deleteList($listid);

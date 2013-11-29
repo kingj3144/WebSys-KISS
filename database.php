@@ -72,17 +72,19 @@
 						FOREIGN KEY(username) REFERENCES users(username)
 						) COLLATE utf8_unicode_ci");
 
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
-						username VARCHAR(32),
-						listid INT NOT NULL,
-						FOREIGN KEY(username) REFERENCES users(username)
-						) COLLATE utf8_unicode_ci");
 
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS lists (
 						listid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 						name VARCHAR(32) NOT NULL,
 						username VARCHAR(32) NOT NULL,
 						FOREIGN KEY(username) REFERENCES users(username)
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
+						username VARCHAR(32),
+						listid INT NOT NULL,
+						FOREIGN KEY(username) REFERENCES users(username),
+						FOREIGN KEY(listid) REFERENCES lists(listid)
 						) COLLATE utf8_unicode_ci");
 					
 				} catch(PDOException $e) {
@@ -274,6 +276,47 @@
 				} else {
 					$query->execute();
 					return $query->fetch()['listid'];
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function addUserToList($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("INSERT INTO listaccess (`username`, `listid`) VALUES ('$username', '$listid')");
+				$query->execute();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function checkUserAccess($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM listaccess WHERE `username`='$username' AND `listid`='$listid'");
+				$query->execute();
+				$result = $query->fetch();
+				if($result != NULL){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function removeUserAccess($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("DELETE FROM `listaccess` WHERE `username`='$username' AND `listid`='$listid';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_DELETE_ERROR);
+					}
+				} else {
+					$query->execute();
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);

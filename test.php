@@ -28,11 +28,23 @@
 			echo "Get list successful<br>";
 		}
 
+		$db->addUser("Jon", "password");
+		$db->addUserToList($listid, "Jon");
+		if ( !$db->checkUserAccess($listid, "Jon") ){
+			throw new Exception("Failed to get list Access");
+		}
+		if( $db->checkUserAccess($listid, "Joon") ) {
+			throw new Exception("List Access failed");
+		}
+
+		$db->removeUserAccess($listid, "Jon");
+
 		echo "Removing list <br>";
 		$db->deleteList($listid);
 
 		echo "Removing user <br>";	
 		$db->removeUser("Jonah");
+		$db->removeUser("Jon");
 		echo "User remvoed<br>";
 
 

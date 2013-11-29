@@ -6,7 +6,8 @@
     'db_name'     => 'Websys7_kiss',
     'db_username' => 'root',
     'db_password' => '',
-    'db_version'  => '_v1',
+    'db_version'  => '_v2',
+    'debug'		  => '',
   );
   
 ?>

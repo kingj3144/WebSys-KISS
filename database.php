@@ -1,12 +1,14 @@
 <?php 
+	const DATABASE_CONNECTION_ERROR = "Not connected to the database";
+	const USER_CREATION_ERROR = "User could not be created";
+	const USER_NOT_FOUND_ERROR = "User could not be found";
+	const USER_NOT_DELTED_ERROR = "User could not be deleted";
+	const SALT_NOT_FOUND_ERROR = "Salt could not be found";
+	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
+	const LIST_CREATION_ERROR = "List could not be created";
+	const LIST_DELETE_ERROR = "List could not be deleted";
 	class KissDatabase
 	{
-		const DATABASE_CONNECTION_ERROR = "Not connected to the database";
-		const SALT_CREATION_ERROR = "Salt could not be created";
-		const USER_NOT_FOUND_ERROR = "User could not be found";
-		const USER_NOT_DELTED_ERROR = "User could not be deleted";
-		const SALT_NOT_FOUND_ERROR = "Salt could not be found";
-		const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 
 		private $conn = NULL;
 
@@ -24,8 +26,18 @@
 			try {
 	  			$this->conn = new PDO('mysql:host='.$this->config['host'],$this->config['db_username'], $this->config['db_password']);
 			} catch(PDOException $e) {
-				echo 'ERROR: ' . $e->getmessage();
+				if ($this->config['debug'] == 'on') {
+					echo 'ERROR: ' . $e->getmessage();
+				} else {
+					throw $e;
+				}
 			}
+		}
+
+		/** Closes the connection to the mySql server
+		  */
+		public function close() {
+			$this->conn = null;
 		}
 
 		/** Sets up the database and tables if they do not already exisit
@@ -37,12 +49,50 @@
 					$this->conn->query("CREATE DATABASE IF NOT EXISTS " . $this->config['db_name'] . $this->config['db_version'] . 
 						" DEFAULT COLLATE utf8_unicode_ci");
 					$this->conn->query("USE " . $this->config['db_name'] . $this->config['db_version']);
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (username VARCHAR(32) PRIMARY KEY NOT NULL, password VARCHAR(64) NOT NULL, name VARCHAR(32), email VARCHAR(32)) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS salts (username VARCHAR(32) PRIMARY KEY NOT NULL, salt VARCHAR(64) NOT NULL) COLLATE utf8_unicode_ci");
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS items () COLLATE utf8_unicode_ci");
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS users (
+						username VARCHAR(32) PRIMARY KEY NOT NULL, 
+						password VARCHAR(64) NOT NULL, 
+						salt VARCHAR(64) NOT NULL,
+						name VARCHAR(32), 
+						email VARCHAR(32)
+						) COLLATE utf8_unicode_ci");
+
+					// $this->conn->exec("CREATE TABLE IF NOT EXISTS salts (
+					// 	username VARCHAR(32) PRIMARY KEY NOT NULL, 
+					// 	salt VARCHAR(64) NOT NULL,
+					// 	FOREIGN KEY (username) REFERENCES users(username)
+					// 	) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listitems (
+						username VARCHAR(32),
+						item VARCHAR(64) NOT NULL,
+						listid INT NOT NULL,
+						category VARCHAR(32),
+						time DATETIME NOT NULL,
+						FOREIGN KEY(username) REFERENCES users(username)
+						) COLLATE utf8_unicode_ci");
+
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS lists (
+						listid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+						name VARCHAR(32) NOT NULL,
+						username VARCHAR(32) NOT NULL,
+						FOREIGN KEY(username) REFERENCES users(username)
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
+						username VARCHAR(32),
+						listid INT NOT NULL,
+						FOREIGN KEY(username) REFERENCES users(username),
+						FOREIGN KEY(listid) REFERENCES lists(listid)
+						) COLLATE utf8_unicode_ci");
 					
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -70,10 +120,14 @@
 		public function getSaltByUser($name) {
 			if ($this->conn != NULL) {
 				try {	
-					$salt = $this->conn->query("SELECT * FROM salts WHERE username=$name LIMIT 1");
+					$salt = $this->conn->query("SELECT salt FROM users WHERE username=$name LIMIT 1");
 					return $salt;
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -89,15 +143,20 @@
 			if ($this->conn != NULL) {
 				try {	
 					$salt = $this->createSalt();
-					if($this->conn->exec("INSERT INTO `salts` (`username`, `salt`) VALUES ('$username', '$salt')") != 0) {
-						$hash = $this->hashPassword($password, $salt);
-						//TO DO: user name needs to be escaped of special characters
-						$this->conn->query("INSERT INTO `users` (`username`, `password`, `name`, `email`) VALUES ('$username', '$hash', '$name', '$email');");
+					$hash = $this->hashPassword($password, $salt);
+					//TO DO: user name needs to be escaped of special characters
+					if ($this->conn->exec("INSERT INTO `users` (
+						`username`, `password`, `salt`, `name`, `email`) VALUES (
+						'$username', '$hash', '$salt', '$name', '$email');") != 0) {
 					} else {
-						throw new Exception(SALT_CREATION_ERROR);
+						throw new Exception(USER_CREATION_ERROR);
 					}
 				} catch(PDOException $e) {
-					echo 'ERROR: ' . $e->getmessage();
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -128,7 +187,7 @@
 
 		public function verifyUser($user, $password) {
 			if ($this->conn != NULL) {
-				foreach ($this->conn->query("SELECT salt FROM `salts` WHERE username='$user'") as $return) {
+				foreach ($this->conn->query("SELECT salt FROM `users` WHERE username='$user'") as $return) {
 					$salt = $return['salt'];
 				}
 				if (isset($salt)) {
@@ -159,15 +218,109 @@
 		public function removeUser($username) {
 			if ($this->conn != NULL) {
 				if ($this->conn->exec("DELETE FROM users WHERE username='$username'") != 0) {
-					if ($this->conn->exec("DELETE FROM salts WHERE username='$username'") == 0) {
-						throw new Exception(SALT_NOT_DELTED_ERROR);
-					}
+					// if ($this->conn->exec("DELETE FROM salts WHERE username='$username'") == 0) {
+					// 	throw new Exception(SALT_NOT_DELTED_ERROR);
+					// }
 				} else {
 					throw new Exception(USER_NOT_DELTED_ERROR);
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
+		}
+
+		public function newList($username, $listname) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("INSERT INTO `lists` (`name`, `username`) VALUES ('$listname', '$username');");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_CREATION_ERROR);
+					}
+				} else {
+					$query->execute();
+					return $this->getListByName($username, $listname);
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function deletelist($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("DELETE FROM `lists` WHERE `listid`='$listid';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_DELETE_ERROR);
+					}
+				} else {
+					$query->execute();
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function getListByName($username, $listname) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT listid FROM `lists` WHERE `name`='$listname' and `username`='$username';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_CREATION_ERROR);
+					}
+				} else {
+					$query->execute();
+					return $query->fetch()['listid'];
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function addUserToList($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("INSERT INTO listaccess (`username`, `listid`) VALUES ('$username', '$listid')");
+				$query->execute();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function checkUserAccess($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM listaccess WHERE `username`='$username' AND `listid`='$listid'");
+				$query->execute();
+				$result = $query->fetch();
+				if($result != NULL){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function removeUserAccess($listid, $username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("DELETE FROM `listaccess` WHERE `username`='$username' AND `listid`='$listid';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_DELETE_ERROR);
+					}
+				} else {
+					$query->execute();
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
 		}
 	}
 

@@ -373,9 +373,19 @@
 
 		public function getListsFromUser($username) {
 			if ($this->conn != NULL) {
-				$query = $this->conn->prepare("SELECT * FROM lists WHERE `username`='$username'");
+				$query = $this->conn->prepare("SELECT * FROM listaccess WHERE `username`='$username'");
 				$query->execute();
 				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function getListName($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT name FROM lists WHERE `listid`='$listid'");
+				$query->execute();
+				return $query->fetch();
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}

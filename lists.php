@@ -24,7 +24,10 @@
       <div class="span2">  
         <ul class="nav nav-pills nav-stacked">
         <?php require "displayListsPage.php";
-              $listid = getLists("jenn"); ?>
+              require_once "config.php";
+              require_once "database.php";
+              $db = new KissDatabase($config);
+              $listid = $db->getListsFromUser("jenn"); ?>
         </ul>
       </div>
     </div>

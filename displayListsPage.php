@@ -3,8 +3,8 @@
 #Get lists that users created. Returns default list for display.
 function getLists($user) {
   try { 
-    require 'database.php';
-    require 'config.php';
+    require_once 'database.php';
+    require_once 'config.php';
     $db = new KissDatabase($config);
   }
   catch (Exception $e) {

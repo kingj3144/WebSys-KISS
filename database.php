@@ -104,8 +104,14 @@
 		  */
 		public function getUserByName($name) {
 			if ($this->conn != NULL) {
-				$user = $this->conn->query("SELECT * FROM users WHERE username=$name LIMIT 1");
-				return $user;
+				$query = $this->conn->prepare("SELECT * FROM `users` WHERE `username`='$name' LIMIT 1");
+				$query->execute();
+				if($query){
+					return $query->fetch();
+				} else {
+					throw new Exception(USER_NOT_FOUND_ERROR);
+					
+				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}

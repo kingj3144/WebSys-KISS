@@ -3,58 +3,79 @@
   //  do either action. Note that the idea as of now is to build this modularly so that we can make
   //  a single page and simply render each php file as needed. This might change in the future.
   
-  require 'database.php';
+	require_once 'database.php';
 	require 'config.php';
-	session_start();
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+    }
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
+    	header("location:./index.php");
+    }
+
 	try {
 		// Create connection to database
 		$db = new KissDatabase($config);
-		
-	}
 	} catch(PDOException $e) {
 		echo 'ERROR: ' . $e->getmessage();
 	}
-		//now we handle the first case in that the user is signing in not signing up.
-		if (isset($_POST['login']) && $_POST['login'] == 'Login') {
-			$uname = $_POST['username'];
-			$pass = $_POST['pass'];
+	//now we handle the first case in that the user is signing in not signing up.
+	if (isset($_POST['login']) && $_POST['login'] == 'Login') {
+		$uname = $_POST['username'];
+		$pass = $_POST['pass'];
+		try{
 			//verify the user
 			//verifyUser(username, password) returns either true or false
 			$login = $db->verifyUser($uname, $pass);
 			//getUserByName(username) returns a user object from mysql tables
-			
-			
-			if ($login == true){
-				$user = $db->getUserByName($uname);
-				$_SESSION['username'] = $user['username'];
-				$_SESSION['name']     = $user['name'];
-				$_SESSION['email']    = $user['email'];
-			}
-			else {
-				echo "Incorrect Username or Password!";
-			}
+		} catch(PDOException $e) {
+			echo 'ERROR: ' . $e->getmessage();
 		}
-		//now for the signup case...
-		else if (isset($_POST['signup']) && $_POST['signup'] == 'Signup') {
-			if (!isset($_POST['email']) || !isset($_POST['name']) || !isset($_POST['uname']) || !isset($_POST['pass']) || !isset($_POST['verify_pass']) || empty($_POST['pass']) || empty($_POST['verify_pass'])) {
-					$msg = "Please fill in all form fields.";
-			}
-			else if ($_POST['pass'] != $_POST['verify_pass']){
-					$msg = "Passwords must match.";
-			}
-			else {
-				//call addUser(username, password, name, email)
+		
+		if ($login == true){
+			$user = $db->getUserByName($uname);
+			echo var_dump($user);
+			$_SESSION['username'] = $user['username'];
+			$_SESSION['name']     = $user['name'];
+			$_SESSION['email']    = $user['email'];
+			$_SESSION['loggedin'] = true;
+		}
+		else {
+			echo "Incorrect Username or Password!";
+		}
+	}
+	//now for the signup case...
+	else if (isset($_POST['signup']) && $_POST['signup'] == 'Signup') {
+		if (!isset($_POST['email']) || 
+			!isset($_POST['name']) || 
+			!isset($_POST['uname']) || 
+			!isset($_POST['pass']) || 
+			!isset($_POST['verify_pass']) 
+			|| empty($_POST['pass']) 
+			|| empty($_POST['verify_pass'])) {
+
+				$msg = "Please fill in all form fields.";
+		}
+		else if ($_POST['pass'] != $_POST['verify_pass']){
+				$msg = "Passwords must match.";
+		}
+		else {
+			//call addUser(username, password, name, email)
+			try {
 				$db->addUser($_POST['uname'], $_POST['pass'],$_POST['name'],$_POST['email']);
-				
+			
 				$msg = "Account Created.";
 				$user = $db->getUserByName($_POST['uname']);
 				$_SESSION['username'] = $user['username'];
 				$_SESSION['name']     = $user['name'];
 				$_SESSION['email']    = $user['email'];
+				$_SESSION['loggedin'] = true;
+			} catch(PDOException $e) {
+				echo 'ERROR: ' . $e->getmessage();
 			}
 		}
+	}
 
-	if ( isset($_SESSION['username']) {
+	if(isset($_SESSION['username'])) {
 		header('Location: index.php');
 		exit();
 	}

@@ -4,7 +4,7 @@
 function getLists($user) {
   try { 
     require 'database.php';
-    require_once 'config.php';
+    require 'config.php';
     $db = new KissDatabase($config);
   }
   catch (Exception $e) {
@@ -26,6 +26,27 @@ function getLists($user) {
   }
 
   return $firstList;
+}
+
+#Get lists from listid
+function getListContent($listid) {
+  try {
+    require 'config.php';
+    $db = new KissDatabase($config);
+  }
+  catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+  }
+
+  echo "<ul>";
+  foreach ($db->getListName($listid) as $row) {
+    echo "<h4>" . $row['name'] . "</h4>";
+  }
+
+  foreach($db->getItemsFromList($listid) as $row) {
+    echo "<li>" . $row['item'] . "</li>";
+  }
+  echo "</ul>";
 }
 
 function editList() {

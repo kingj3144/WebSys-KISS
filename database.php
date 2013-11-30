@@ -7,6 +7,7 @@
 	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 	const LIST_CREATION_ERROR = "List could not be created";
 	const LIST_DELETE_ERROR = "List could not be deleted";
+	
 	class KissDatabase
 	{
 
@@ -57,28 +58,24 @@
 						email VARCHAR(32)
 						) COLLATE utf8_unicode_ci");
 
-					// $this->conn->exec("CREATE TABLE IF NOT EXISTS salts (
-					// 	username VARCHAR(32) PRIMARY KEY NOT NULL, 
-					// 	salt VARCHAR(64) NOT NULL,
-					// 	FOREIGN KEY (username) REFERENCES users(username)
-					// 	) COLLATE utf8_unicode_ci");
-
-					$this->conn->exec("CREATE TABLE IF NOT EXISTS listitems (
-						username VARCHAR(32),
-						item VARCHAR(64) NOT NULL,
-						quantity INT,
-						listid INT NOT NULL,
-						category VARCHAR(32),
-						time DATETIME NOT NULL,
-						FOREIGN KEY(username) REFERENCES users(username)
-						) COLLATE utf8_unicode_ci");
-
-
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS lists (
 						listid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 						name VARCHAR(32) NOT NULL,
 						username VARCHAR(32) NOT NULL,
 						FOREIGN KEY(username) REFERENCES users(username)
+						) COLLATE utf8_unicode_ci");
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS listitems (
+						itemid INT PRIMARY KEY NOT NULL,
+						username VARCHAR(32),
+						item VARCHAR(64) NOT NULL,
+						quantity INT,
+						unit VARCHAR(16),
+						listid INT NOT NULL,
+						category VARCHAR(32),
+						time DATETIME NOT NULL,
+						FOREIGN KEY(username) REFERENCES users(username),
+						FOREIGN KEY(listid) REFERENCES lists(listid)
 						) COLLATE utf8_unicode_ci");
 
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
@@ -241,7 +238,9 @@
 					}
 				} else {
 					$query->execute();
-					return $this->getListByName($username, $listname);
+					$listid = $this->getListByName($username, $listname);
+					$this->addUserToList($listid, $username);
+					return $listid;
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -323,6 +322,63 @@
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}	
 		}
-	}
 
+		public function addItemToList($username, $item, $listid, $category, $quantity, $unit) {
+			if ($this->conn != NULL) {
+				if($this->checkUserAccess($listid, $username)) {
+					$query = $this->conn->prepare("INSERT INTO listitems 
+						(username, item, listid, category, quantity, unit) VALUES 
+						('$username', '$item', '$listid', '$category', '$quantity', $unit)");
+					if(!$query){
+						if($this->config['debug'] = 'on'){
+							throw new Exception($query->errorInfo());
+						}else{
+							throw new Exception(LIST_DELETE_ERROR);
+						}
+					} else {
+						$query->execute();
+					}
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function removeItemFromList($item, $listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("DELETE FROM listitems WHERE `item`='$item' AND `listid`='$listid';");
+				if(!$query){
+					if($this->config['debug'] = 'on'){
+						throw new Exception($query->errorInfo());
+					}else{
+						throw new Exception(LIST_DELETE_ERROR);
+					}
+				} else {
+					$query->execute();
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function getItemsFromList($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM listitems WHERE `listid`='$listid'");
+				$query->execute();
+				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		public function getListsFromUser($username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM lists WHERE `username`='$username'");
+				$query->execute();
+				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+	}
 ?>

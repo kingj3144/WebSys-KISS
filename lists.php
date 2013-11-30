@@ -23,11 +23,11 @@
     <div id="menu" class="row">  
       <div class="span2">  
         <ul class="nav nav-pills nav-stacked">
-        <?php require "displayListsPage.php";
+        <?php require_once "displayListsPage.php";
               require_once "config.php";
               require_once "database.php";
               $db = new KissDatabase($config);
-              $listid = $db->getListsFromUser("jenn"); ?>
+              $listid = getLists("jenn"); ?>
         </ul>
       </div>
     </div>

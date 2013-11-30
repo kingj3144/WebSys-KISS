@@ -1,10 +1,10 @@
 <?php
+    require_once 'database.php';
 
 #Get lists that users created. Returns default list for display.
 function getLists($user) {
   try { 
-    require_once 'database.php';
-    require_once 'config.php';
+    require 'config.php';
     $db = new KissDatabase($config);
   }
   catch (Exception $e) {
@@ -31,7 +31,7 @@ function getLists($user) {
 #Get lists from listid
 function getListContent($listid) {
   try {
-    require 'config.php';
+    require "config.php";
     $db = new KissDatabase($config);
   }
   catch (Exception $e) {

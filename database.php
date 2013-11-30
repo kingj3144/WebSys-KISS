@@ -7,6 +7,7 @@
 	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 	const LIST_CREATION_ERROR = "List could not be created";
 	const LIST_DELETE_ERROR = "List could not be deleted";
+	
 	class KissDatabase
 	{
 

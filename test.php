@@ -50,7 +50,6 @@
 		$db->removeUser("Jon");
 		echo "User remvoed<br>";
 
-
 		$db->close();
 		echo "Test Complete <br>";
 	} catch(Exception $e) {

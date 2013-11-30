@@ -361,5 +361,15 @@
 			}
 		}
 
+		public function getItemsFromList($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM listitems WHERE `listid`='$listid'");
+				$query->execute();
+				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
 	}
 ?>

@@ -3,9 +3,62 @@
   //  do either action. Note that the idea as of now is to build this modularly so that we can make
   //  a single page and simply render each php file as needed. This might change in the future.
   
-  
-  
-  
+  require 'database.php';
+	require 'config.php';
+	session_start();
+	try {
+		// Create connection to database
+		$db = new KissDatabase($config);
+		
+	}
+	} catch(PDOException $e) {
+		echo 'ERROR: ' . $e->getmessage();
+	}
+		//now we handle the first case in that the user is signing in not signing up.
+		if (isset($_POST['login']) && $_POST['login'] == 'Login') {
+			$uname = $_POST['username'];
+			$pass = $_POST['pass'];
+			//verify the user
+			//verifyUser(username, password) returns either true or false
+			$login = $db->verifyUser($uname, $pass);
+			//getUserByName(username) returns a user object from mysql tables
+			
+			
+			if ($login == true){
+				$user = $db->getUserByName($uname);
+				$_SESSION['username'] = $user['username'];
+				$_SESSION['name']     = $user['name'];
+				$_SESSION['email']    = $user['email'];
+			}
+			else {
+				echo "Incorrect Username or Password!";
+			}
+		}
+		//now for the signup case...
+		else if (isset($_POST['signup']) && $_POST['signup'] == 'Signup') {
+			if (!isset($_POST['email']) || !isset($_POST['name']) || !isset($_POST['uname']) || !isset($_POST['pass']) || !isset($_POST['verify_pass']) || empty($_POST['pass']) || empty($_POST['verify_pass'])) {
+					$msg = "Please fill in all form fields.";
+			}
+			else if ($_POST['pass'] != $_POST['verify_pass']){
+					$msg = "Passwords must match.";
+			}
+			else {
+				//call addUser(username, password, name, email)
+				$db->addUser($_POST['uname'], $_POST['pass'],$_POST['name'],$_POST['email']);
+				
+				$msg = "Account Created.";
+				$user = $db->getUserByName($_POST['uname']);
+				$_SESSION['username'] = $user['username'];
+				$_SESSION['name']     = $user['name'];
+				$_SESSION['email']    = $user['email'];
+			}
+		}
+
+	if ( isset($_SESSION['username']) {
+		header('Location: index.php');
+		exit();
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +67,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Kiss Signup/Login page">
     <meta name="author" content="Tornado Sharks">
-<!--    <link rel="shortcut icon" href="../../assets/ico/favicon.png">-->
 
     <title>Login or Sign Up for KISS</title>
 
@@ -29,17 +81,19 @@
   </head>
 
   <body>
+		<img src="resources/css/images/fullName.png" class="masthead" alt="Kitchen Inventory Supply System" />
 		<div class="sign-in">
+			
     	<div class="container">
 
       <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="form-control" placeholder="Username" autofocus/>
-        <input type="password" class="form-control" placeholder="Password"/>
+        <input type="text" class="form-control" placeholder="Username" name="username" autofocus/>
+        <input type="password" name="pass" class="form-control" placeholder="Password"/>
         <label class="checkbox">
           <input type="checkbox" value="remember-me"/> Remember me
         </label>
-        <button class="btn btn-lg btn-primary btn-block button" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block button" type="submit" name="login" value="Login">Sign in</button>
       </form>
 
     	</div> 
@@ -54,11 +108,13 @@
 				<input type="text" class="form-control" placeholder="Username" name="uname" />
         <input type="password" class="form-control" placeholder="Password" name="pass" />
 				<input type="password" class="form-control" placeholder="Verify Password" name="verify_pass" />
-        <button class="btn btn-lg btn-primary btn-block button" type="submit">Create Account</button>
+        <button class="btn btn-lg btn-primary btn-block button" type="submit" name="signup" value="Signup">Create Account</button>
       </form>
 
     </div>
 		</div>
-
+		<footer>
+			<img src="resources/css/images/logo.png" class="logo" />
+		</footer>
   </body>
 </html>

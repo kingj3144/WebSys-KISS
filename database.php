@@ -69,6 +69,7 @@
 						itemid INT PRIMARY KEY NOT NULL,
 						username VARCHAR(32),
 						item VARCHAR(64) NOT NULL,
+						quantity INT,
 						listid INT NOT NULL,
 						category VARCHAR(32),
 						time DATETIME NOT NULL,

@@ -371,5 +371,14 @@
 			}
 		}
 
+		public function getListsFromUser($username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM lists WHERE `username`='$username'");
+				$query->execute();
+				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
 	}
 ?>

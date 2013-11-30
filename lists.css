@@ -1,0 +1,36 @@
+#logo {
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 30px;
+}
+
+.row{
+	padding: 5px;
+    float:left;
+    margin:10px 10px 0 10px;
+    width: 15%;
+    border-right: 1px solid #333;
+}
+
+.span2 {
+	width: 85%;
+}
+
+#list{
+	padding: 5px;
+    float:left;
+    margin:10px 10px 0 10px;
+    width: 30%;
+    border-right: 1px solid #333;
+}
+
+#accessList {
+	padding: 5px;
+    float:left;
+    margin:10px 10px 0 10px;
+    width: 15%;
+}
+
+#temp {
+	width: 100%;
+}

@@ -70,6 +70,7 @@
 						username VARCHAR(32),
 						item VARCHAR(64) NOT NULL,
 						quantity INT,
+						unit VARCHAR(16),
 						listid INT NOT NULL,
 						category VARCHAR(32),
 						time DATETIME NOT NULL,
@@ -322,12 +323,12 @@
 			}	
 		}
 
-		public function addItemToList($username, $item, $listid, $category) {
+		public function addItemToList($username, $item, $listid, $category, $quantity, $unit) {
 			if ($this->conn != NULL) {
 				if($this->checkUserAccess($listid, $username)) {
 					$query = $this->conn->prepare("INSERT INTO listitems 
-						(username, item, listid, category) VALUES 
-						('$username', '$item', '$listid', '$category')");
+						(username, item, listid, category, quantity, unit) VALUES 
+						('$username', '$item', '$listid', '$category', '$quantity', $unit)");
 					if(!$query){
 						if($this->config['debug'] = 'on'){
 							throw new Exception($query->errorInfo());

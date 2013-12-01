@@ -5,6 +5,7 @@
   
 	require_once 'database.php';
 	require 'config.php';
+
 	if (session_status() == PHP_SESSION_NONE) {
 		session_start();
     }
@@ -12,11 +13,14 @@
     	header("location:./index.php");
     }
 
+    $error = array();
 	try {
 		// Create connection to database
 		$db = new KissDatabase($config);
-	} catch(PDOException $e) {
-		echo 'ERROR: ' . $e->getmessage();
+	} catch(Exception $e) {
+		if($config['debug'] == 'on') {
+			array_push($error,'ERROR: ' . $e->getmessage());
+		}
 	}
 	//now we handle the first case in that the user is signing in not signing up.
 	if (isset($_POST['login']) && $_POST['login'] == 'Login') {
@@ -27,20 +31,29 @@
 			//verifyUser(username, password) returns either true or false
 			$login = $db->verifyUser($uname, $pass);
 			//getUserByName(username) returns a user object from mysql tables
-		} catch(PDOException $e) {
-			echo 'ERROR: ' . $e->getmessage();
+		} catch(Exception $e) {
+			if($config['debug'] == 'on') {
+				array_push($error,'ERROR: ' . $e->getmessage());
+			}
 		}
 		
-		if ($login == true){
-			$user = $db->getUserByName($uname);
-			echo var_dump($user);
-			$_SESSION['username'] = $user['username'];
-			$_SESSION['name']     = $user['name'];
-			$_SESSION['email']    = $user['email'];
-			$_SESSION['loggedin'] = true;
+		if (isset($login) && $login == true){
+			try {
+				$user = $db->getUserByName($uname);
+				// echo var_dump($user);
+				$_SESSION['username'] = $user['username'];
+				$_SESSION['name']     = $user['name'];
+				$_SESSION['email']    = $user['email'];
+				$_SESSION['loggedin'] = true;
+			} catch(Exception $e) {
+				if($config['debug'] == 'on') {
+					array_push($error,'ERROR: ' . $e->getmessage());
+				}
+			}
 		}
 		else {
-			echo "Incorrect Username or Password!";
+			// echo "Incorrect Username or Password!";
+			array_push($error,"Incorrect Username or Password!");
 		}
 	}
 	//now for the signup case...
@@ -69,8 +82,8 @@
 				$_SESSION['name']     = $user['name'];
 				$_SESSION['email']    = $user['email'];
 				$_SESSION['loggedin'] = true;
-			} catch(PDOException $e) {
-				echo 'ERROR: ' . $e->getmessage();
+			} catch(Exception $e) {
+				$msg = "Incorrect Username or Password!";
 			}
 		}
 	}
@@ -138,4 +151,13 @@
 			<img src="resources/css/images/logo.png" class="logo" />
 		</footer>
   </body>
+  <script type="text/javascript">
+  <?php
+  	if(isset($error) && is_array($error) && !empty($error)){
+  		foreach ($error as $msg) {
+  			echo "alert(\"$msg\");";
+  		}
+  	}
+  ?>
+  </script>
 </html>

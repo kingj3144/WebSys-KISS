@@ -7,7 +7,8 @@
 	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
 	const LIST_CREATION_ERROR = "List could not be created";
 	const LIST_DELETE_ERROR = "List could not be deleted";
-	
+	const USER_ACCESS_ERROR = "The users does not have access to do that";
+
 	class KissDatabase
 	{
 
@@ -73,7 +74,7 @@
 						unit VARCHAR(16),
 						listid INT NOT NULL,
 						category VARCHAR(32),
-						time DATETIME NOT NULL,
+						time DATETIME,
 						FOREIGN KEY(username) REFERENCES users(username),
 						FOREIGN KEY(listid) REFERENCES lists(listid)
 						) COLLATE utf8_unicode_ci");
@@ -191,9 +192,11 @@
 
 		public function verifyUser($user, $password) {
 			if ($this->conn != NULL) {
-				foreach ($this->conn->query("SELECT salt FROM `users` WHERE username='$user'") as $return) {
-					$salt = $return['salt'];
-				}
+				$query = $this->conn->prepare("SELECT salt FROM `users` WHERE username='$user'");
+				$query->execute();
+
+				$salt = $query->fetch()['salt'];
+
 				if (isset($salt)) {
 					foreach ($this->conn->query("SELECT * FROM `users` WHERE username='$user'") as $return) {
 						$hashPassword = $return['password'];
@@ -332,18 +335,20 @@
 		public function addItemToList($username, $item, $listid, $category, $quantity, $unit) {
 			if ($this->conn != NULL) {
 				if($this->checkUserAccess($listid, $username)) {
-					$query = $this->conn->prepare("INSERT INTO listitems 
-						(username, item, listid, category, quantity, unit) VALUES 
-						('$username', '$item', '$listid', '$category', '$quantity', $unit)");
+					$query = $this->conn->prepare("INSERT INTO `listitems` 
+						(`itemid`, `username`, `item`, `quantity`, `unit`, `listid`, `category`, `time`)
+						 VALUES (NULL, '$username', '$item', '$quantity', '$unit', '$listid', '$category', NULL);");
 					if(!$query){
 						if($this->config['debug'] = 'on'){
 							throw new Exception($query->errorInfo());
 						}else{
-							throw new Exception(LIST_DELETE_ERROR);
+							throw new Exception(LIST_ITEM_ADD_ERROR);
 						}
 					} else {
 						$query->execute();
 					}
+				} else {
+					throw new Exception(USER_ACCESS_ERROR);
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);

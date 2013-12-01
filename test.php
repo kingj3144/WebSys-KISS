@@ -10,7 +10,7 @@
 		echo "Adding user <br>";
 		$db->addUser("Jonah", "Password");
 		
-		echo var_dump($db->getUserByName("Jonah"));
+		// echo var_dump($db->getUserByName("Jonah"));
 		echo "<br>";
 
 		if( !$db->verifyUser("Jonah", "Password") ){
@@ -40,17 +40,28 @@
 		if( $db->checkUserAccess($listid, "Joon") ) {
 			throw new Exception("List Access failed");
 		}
-		// $db->addItemToList("Jonah", "Apples", $listid, "fruit", null, null);
-		// $db->removeItemFromList("Apples", $listid);
-		// $db->removeUserAccess($listid, "Jon");
-		// $db->removeUserAccess($listid, "Jonah");
+		$db->addItemToList("Jonah", "Apples", $listid, "fruit", null, null);
+		$db->addItemToList("Jonah", "Bananas", $listid, "fruit", null, null);
+		echo "<br>THIS:<br>";
+		echo var_dump($db->getItemsFromList($listid));
+		echo "<br>";
+		$list = "";
+		foreach($db->getItemsFromList($listid) as $row) {
+    		$list .= "<tr><td>" . $row['item'] . "</td><td>" . 
+          $row['quantity'] . " " . $row['unit'] . "</td></tr><br><br><br>";
+  		}
+  		echo $list;
+		$db->removeItemFromList("Apples", $listid);
+		$db->removeItemFromList("Bananas", $listid);
+		$db->removeUserAccess($listid, "Jon");
+		$db->removeUserAccess($listid, "Jonah");
 
 		echo "Removing list <br>";
-		// $db->deleteList($listid);
+		$db->deleteList($listid);
 
 		echo "Removing user <br>";	
-		// $db->removeUser("Jonah");
-		// $db->removeUser("Jon");
+		$db->removeUser("Jonah");
+		$db->removeUser("Jon");
 		echo "User remvoed<br>";
 
 		$db->close();

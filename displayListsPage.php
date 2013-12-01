@@ -123,7 +123,7 @@ function addNewList() {
             <label class=\"sr-only\" for=\"listName\"></label>
               <input type=\"text\" class=\"form-control list-input\" id=\"listName\" name=\"listName\" placeholder=\"List Name\">
            </div>
-          <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add List</button>
+          <button type=\"submit\" class=\"btn btn-default\" name=\"addList\">Add List</button>
         </form>";
 }
 ?>

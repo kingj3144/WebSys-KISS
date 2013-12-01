@@ -30,6 +30,13 @@ if(isset($_POST['addItem'])) {
 	} catch(Exception $e) {
 			echo "ERROR: " . $e->getmessage();
 	}
+} elseif (isset($_POST['addList'])) {
+	try {		
+		$db = new KissDatabase($config);
+		$db->newList($_SESSION['username'], $_POST['listName']);
+	} catch(Exception $e) {
+			echo "ERROR: " . $e->getmessage();
+	}
 }
 header("location:./lists.php");
 ?>

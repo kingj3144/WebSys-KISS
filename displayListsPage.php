@@ -103,13 +103,17 @@ function editList($listid) {
         </form>";
 }
 
-function addEditors() {
-  echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\">
+function addEditors($listid) {
+  echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"username\" class=\"input-small\"></label>
-              <input type=\"text\" class=\"form-control input-normal\" id=\"username\" placeholder=\"Username\">
+              <input type=\"text\" class=\"form-control input-normal\" id=\"username\" name=\"username\" placeholder=\"Username\">
            </div>
-          <button type=\"submit\" class=\"btn btn-default\">Add User</button>
+           <div class=\"form-group\">
+            <label class=\"sr-only\" for=\"listid\"></label>
+            <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
+          </div>
+          <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add User</button>
         </form>";
 }
 ?>

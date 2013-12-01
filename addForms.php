@@ -18,9 +18,17 @@ if(isset($_POST['addItem'])) {
 				null, 
 				$_POST['quantity'], 
 				$_POST['unit']);
+				$db->close();
 		} catch(Exception $e) {
 			echo "ERROR: " . $e->getmessage();
 		}
+	}
+} elseif (isset($_POST['addUser'])) {
+	try {
+		$db = new KissDatabase($config);
+		$db->addUserToList($_POST['listid'], $_POST['username']);
+	} catch(Exception $e) {
+			echo "ERROR: " . $e->getmessage();
 	}
 }
 header("location:./lists.php");

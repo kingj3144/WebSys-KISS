@@ -13,18 +13,23 @@ function getLists($user) {
 
   $first = false;
   $firstList = 0;
-  foreach($db->getListsFromUser($user) as $row)
-  {
-    $listFromDB = getListContent(false, $row['listid']);
-    $accessList = getAccessList($row['listid']);
-    echo "<li><a id=\"" . $row['listid'] . "\" href=\"#\" 
-          onclick=\"getList('" . $listFromDB . "', '" . $accessList . "');
-          return false;\">". $db->getListName($row['listid']) . "</a></li>";
 
-    if ($first == false) {
+  try {
+    foreach($db->getListsFromUser($user) as $row)
+    {
+      $listFromDB = getListContent(false, $row['listid']);
+      $accessList = getAccessList($row['listid']);
+      echo "<li ><a id=\"" . $row['listid'] . "\" href=\"#\" 
+            onclick=\"getList('" . $listFromDB . "', '" . $accessList . "'," . $row['listid'] . ");
+            return false;\">". $db->getListName($row['listid']) . "</a></li>";
+
+      if ($first == false) {
       $first = true;
       $firstList = $row['listid'];
     }
+    }
+  } catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
   }
   return $firstList;
 }

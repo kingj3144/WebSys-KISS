@@ -66,8 +66,8 @@
 						) COLLATE utf8_unicode_ci");
 
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS listitems (
-						itemid INT PRIMARY KEY NOT NULL,
-						username VARCHAR(32),
+						itemid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+						username VARCHAR(32) NOT NULL,
 						item VARCHAR(64) NOT NULL,
 						quantity INT,
 						unit VARCHAR(16),
@@ -79,7 +79,7 @@
 						) COLLATE utf8_unicode_ci");
 
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS listaccess ( 
-						username VARCHAR(32),
+						username VARCHAR(32) NOT NULL,
 						listid INT NOT NULL,
 						FOREIGN KEY(username) REFERENCES users(username),
 						FOREIGN KEY(listid) REFERENCES lists(listid)

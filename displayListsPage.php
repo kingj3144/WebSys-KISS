@@ -11,28 +11,21 @@ function getLists($user) {
     echo "Error: " . $e->getMessage();
   }
 
-  $count = 0;
+  $first = false;
   $firstList = 0;
   foreach($db->getListsFromUser($user) as $row)
   {
-    if ($count == 0) {
-      $listFromDB = getListContent(false, $row['listid']);
-      $accessList = getAccessList($row['listid']);
-      echo "<li class=\"active\"><a id=\"" . $row['listid'] . "\" href=\"#\" 
-            onclick=\"getList('" . $listFromDB . "', '" . $accessList . "');
-            return false;\">". $db->getListName($row['listid']) . "</a></li>";
-      $count++;
+    $listFromDB = getListContent(false, $row['listid']);
+    $accessList = getAccessList($row['listid']);
+    echo "<li><a id=\"" . $row['listid'] . "\" href=\"#\" 
+          onclick=\"getList('" . $listFromDB . "', '" . $accessList . "');
+          return false;\">". $db->getListName($row['listid']) . "</a></li>";
+
+    if ($first == false) {
+      $first = true;
       $firstList = $row['listid'];
     }
-    else {
-      $listFromDB = getListContent(false, $row['listid']);
-      $accessList = getAccessList($row['listid']);
-      echo "<li><a id=\"" . $row['listid'] . "\" href=\"#\" 
-            onclick=\"getList('" . $listFromDB . "', '" . $accessList . "');
-            return false;\">". $db->getListName($row['listid']) . "</a></li>";
-    }
   }
-
   return $firstList;
 }
 
@@ -86,7 +79,7 @@ function editList($listid) {
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"itemName\"></label>
               <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
-           </div>
+          </div>
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"quantity\"></label>
             <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" name=\"quantity\" placeholder=\"Quantity\" min=\"0\">
@@ -96,10 +89,10 @@ function editList($listid) {
 
             <label class=\"sr-only\" for=\"listid\"></label>
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
-            </div>
+          </div>
           <div class=\"buttonPos-item\">
             <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
-           </div>
+          </div>
         </form>";
 }
 
@@ -113,7 +106,7 @@ function addEditors($listid) {
             <label class=\"sr-only\" for=\"listid\"></label>
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
             <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add User</button>
-            </div>
+          </div>
         </form>";
 }
 
@@ -122,7 +115,7 @@ function addNewList() {
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"listName\"></label>
               <input type=\"text\" class=\"form-control list-input\" id=\"listName\" name=\"listName\" placeholder=\"List Name\">
-           </div>
+          </div>
           <button type=\"submit\" class=\"btn btn-default\" name=\"addList\">Add List</button>
         </form>";
 }

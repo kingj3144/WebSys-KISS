@@ -9,7 +9,6 @@
     float:left;
     margin:10px 10px 0 10px;
     width: 15%;
-    border-right: 1px solid #333;
 }
 
 .span2 {
@@ -17,11 +16,12 @@
 }
 
 #list{
-	padding: 5px;
+	padding: 5px 5px 5px 20px;
     float:left;
     margin:10px 10px 0 10px;
     width: 30%;
     border-right: 1px solid #333;
+    border-left: 1px solid #333;
 }
 
 #accessList {

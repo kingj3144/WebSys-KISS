@@ -396,5 +396,15 @@
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
+
+		public function getAccessList($listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT username FROM listaccess WHERE `listid`='$listid'");
+				$query->execute();
+				return $query->fetchAll();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
 	}
 ?>

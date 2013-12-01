@@ -62,7 +62,7 @@
 			//call addUser(username, password, name, email)
 			try {
 				$db->addUser($_POST['uname'], $_POST['pass'],$_POST['name'],$_POST['email']);
-			
+				$db->newList($_POST['uname'], "Groceries");
 				$msg = "Account Created.";
 				$user = $db->getUserByName($_POST['uname']);
 				$_SESSION['username'] = $user['username'];

@@ -391,7 +391,7 @@
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT name FROM lists WHERE `listid`='$listid'");
 				$query->execute();
-				return $query->fetch();
+				return $query->fetch()['name'];
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}

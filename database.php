@@ -355,9 +355,9 @@
 			}	
 		}
 
-		public function removeItemFromList($item, $listid) {
+		public function removeItemFromList($itemid) {
 			if ($this->conn != NULL) {
-				$query = $this->conn->prepare("DELETE FROM listitems WHERE `item`='$item' AND `listid`='$listid';");
+				$query = $this->conn->prepare("DELETE FROM listitems WHERE `itemid`='$itemid';");
 				if(!$query){
 					if($this->config['debug'] = 'on'){
 						throw new Exception($query->errorInfo());

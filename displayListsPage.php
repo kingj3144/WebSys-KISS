@@ -20,7 +20,7 @@ function getLists($user) {
       $accessList = getAccessList($row['listid']);
       echo "<li class=\"active\"><a id=\"" . $row['listid'] . "\" href=\"#\" 
             onclick=\"getList('" . $listFromDB . "', '" . $accessList . "');
-            return false;\">". $row['name'] . "</a></li>";
+            return false;\">". $db->getListName($row['listid']) . "</a></li>";
       $count++;
       $firstList = $row['listid'];
     }

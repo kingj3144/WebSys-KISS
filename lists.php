@@ -1,3 +1,11 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+    }
+    if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin'] == true) {
+      header("location:./index.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,7 +36,7 @@
               require_once "database.php";
               $db = new KissDatabase($config);
               // CHANGE to session username
-              $listid = getLists("jenn"); ?>
+              $listid = getLists($_SESSION['username']); ?>
         </ul>
       </div>
     </div>

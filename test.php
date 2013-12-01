@@ -40,17 +40,17 @@
 		if( $db->checkUserAccess($listid, "Joon") ) {
 			throw new Exception("List Access failed");
 		}
-		$db->addItemToList("Jonah", "Apples", $listid, "fruit", null, null);
-		$db->removeItemFromList("Apples", $listid);
-		$db->removeUserAccess($listid, "Jon");
-		$db->removeUserAccess($listid, "Jonah");
+		// $db->addItemToList("Jonah", "Apples", $listid, "fruit", null, null);
+		// $db->removeItemFromList("Apples", $listid);
+		// $db->removeUserAccess($listid, "Jon");
+		// $db->removeUserAccess($listid, "Jonah");
 
 		echo "Removing list <br>";
-		$db->deleteList($listid);
+		// $db->deleteList($listid);
 
 		echo "Removing user <br>";	
-		$db->removeUser("Jonah");
-		$db->removeUser("Jon");
+		// $db->removeUser("Jonah");
+		// $db->removeUser("Jon");
 		echo "User remvoed<br>";
 
 		$db->close();

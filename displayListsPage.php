@@ -81,21 +81,25 @@ function getAccessList($listid) {
   return $list;
 }
 
-function editList() {
-  echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\">
+function editList($listid) {
+  echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"itemName\" class=\"input-small\"></label>
-              <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" placeholder=\"Item Name\">
+              <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
            </div>
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"quantity\"></label>
-            <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" placeholder=\"Quantity\" min=\"0\">
+            <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" name=\"quantity\" placeholder=\"Quantity\" min=\"0\">
           </div>
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"unit\"></label>
-            <input type=\"text\" class=\"form-control input-small\" id=\"unit\" placeholder=\"Unit\">
+            <input type=\"text\" class=\"form-control input-small\" id=\"unit\" name=\"unit\" placeholder=\"Unit\">
           </div>
-          <button type=\"submit\" class=\"btn btn-default\">Add Item</button>
+          <div class=\"form-group\">
+            <label class=\"sr-only\" for=\"listid\"></label>
+            <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
+          </div>
+          <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
         </form>";
 }
 

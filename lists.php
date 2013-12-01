@@ -47,7 +47,7 @@ if (session_status() == PHP_SESSION_NONE) {
       <!-- list generated here -->
     </div>
     <div id="listForms">
-      <?php editList(); ?>
+      <?php editList($listid); ?>
     </div>
   </div>
 
@@ -56,7 +56,7 @@ if (session_status() == PHP_SESSION_NONE) {
       <?php echo getAccessList($listid); ?>
     </div>
     <div id="accessForms">
-      <?php addEditors(); ?>
+      <?php addEditors($listid); ?>
     </div>
   </div>
 

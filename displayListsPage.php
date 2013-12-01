@@ -84,36 +84,46 @@ function getAccessList($listid) {
 function editList($listid) {
   echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
-            <label class=\"sr-only\" for=\"itemName\" class=\"input-small\"></label>
+            <label class=\"sr-only\" for=\"itemName\"></label>
               <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
            </div>
           <div class=\"form-group\">
             <label class=\"sr-only\" for=\"quantity\"></label>
             <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" name=\"quantity\" placeholder=\"Quantity\" min=\"0\">
-          </div>
-          <div class=\"form-group\">
+
             <label class=\"sr-only\" for=\"unit\"></label>
             <input type=\"text\" class=\"form-control input-small\" id=\"unit\" name=\"unit\" placeholder=\"Unit\">
-          </div>
-          <div class=\"form-group\">
+
             <label class=\"sr-only\" for=\"listid\"></label>
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
-          </div>
-          <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+            </div>
+          <div class=\"buttonPos-item\">
+            <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+           </div>
         </form>";
 }
 
+//Add users to access list
 function addEditors($listid) {
   echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
-            <label class=\"sr-only\" for=\"username\" class=\"input-small\"></label>
-              <input type=\"text\" class=\"form-control input-normal\" id=\"username\" name=\"username\" placeholder=\"Username\">
-           </div>
-           <div class=\"form-group\">
+            <label class=\"sr-only\" for=\"username\"></label>
+            <input type=\"text\" class=\"form-control input-normal\" id=\"username\" name=\"username\" placeholder=\"Username\">
+
             <label class=\"sr-only\" for=\"listid\"></label>
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
-          </div>
-          <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add User</button>
+            <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add User</button>
+            </div>
+        </form>";
+}
+
+function addNewList() {
+  echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
+          <div class=\"form-group\">
+            <label class=\"sr-only\" for=\"listName\"></label>
+              <input type=\"text\" class=\"form-control list-input\" id=\"listName\" name=\"listName\" placeholder=\"List Name\">
+           </div>
+          <button type=\"submit\" class=\"btn btn-default\" name=\"addUser\">Add List</button>
         </form>";
 }
 ?>

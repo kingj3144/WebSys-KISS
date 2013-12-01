@@ -31,6 +31,10 @@
     width: 15%;
 }
 
-#temp {
-	width: 100%;
+.list-input {
+    width: 170px;
+}
+
+.buttonPos-item {
+    padding-left: 4px;
 }

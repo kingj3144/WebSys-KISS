@@ -38,6 +38,7 @@ if (session_status() == PHP_SESSION_NONE) {
               // CHANGE to session username
               $listid = getLists($_SESSION['username']); ?>
         </ul>
+        <?php addNewList(); ?>
       </div>
     </div>
 

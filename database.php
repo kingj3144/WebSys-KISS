@@ -414,5 +414,23 @@
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}
 		}
+
+		public function updateUserEmail($username, $email) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("UPDATE `users` SET `email`='$email' WHERE `username`='$username'");
+				$query->execute();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function updateUserName($username, $name) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("UPDATE `users` SET `name`='$name' WHERE `username`='$username'");
+				$query->execute();
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
 	}
 ?>

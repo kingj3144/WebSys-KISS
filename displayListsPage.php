@@ -17,68 +17,18 @@ function getLists($user) {
   try {
     foreach($db->getListsFromUser($user) as $row)
     {
-      $listFromDB = getListContent(false, $row['listid']);
-      $accessList = getAccessList($row['listid']);
-      echo "<li ><a id=\"" . $row['listid'] . "\" href=\"#\" 
-            onclick=\"getList('" . $listFromDB . "', '" . $accessList . "'," . $row['listid'] . ");
-            return false;\">". $db->getListName($row['listid']) . "</a></li>";
+      echo "<li><a href='lists.php?listid=" . $row['listid'] 
+            . "'>" . $db->getListName($row['listid']) . "</a></li>";
 
       if ($first == false) {
       $first = true;
       $firstList = $row['listid'];
-    }
+      }
     }
   } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
   }
   return $firstList;
-}
-
-#Get lists from listid
-function getListContent($first, $listid) {
-  try {
-    require "config.php";
-    $db = new KissDatabase($config);
-  }
-  catch (Exception $e) {
-    return "Error: " . $e->getMessage();
-  }
-
-  $list = "<h4>" . $db->getListName($listid) . "</h4>";
-
-  if ($first == true) {
-    $list .= "<table class=\"table table-condensed\">";
-  }
-  else {
-    $list .= "<table class=&quot;table table-condensed&quot;>";
-  }
-
-  foreach($db->getItemsFromList($listid) as $row) {
-    $list .= "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
-            " " . $row['unit'] . "</td><td><a href='remove.php?itemid=" . 
-            $row['itemid'] . "'><span class='glyphicon glyphicon-trash'>
-            </span></a></td></tr>";
-  }
-  $list .= "</table>";
-  return $list;
-}
-
-# get access list
-function getAccessList($listid) {
-    try {
-    require 'config.php';
-    $db = new KissDatabase($config);
-  }
-  catch (Exception $e) {
-    return "Error: " . $e->getMessage();
-  }
-
-  $list = "<h4>Access List</h4><ul>";
-  foreach($db->getAccessList($listid) as $row) {
-    $list .= "<li>" . $row['username'] . "</li>";
-  }
-  $list .= "</ul>";
-  return $list;
 }
 
 function editList($listid) {

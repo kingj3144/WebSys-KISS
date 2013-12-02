@@ -2,10 +2,73 @@
 // if (session_status() == PHP_SESSION_NONE) {
     session_start();
     // }
-    if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin'] == true) {
-      header("location:./index.php");
+if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin'] == true) {
+  header("location:./index.php");
+}
+require_once "config.php";
+require_once "database.php";
+
+#Get lists from listid
+function getListContent($listid) {
+  try {
+    require "config.php";
+    $db = new KissDatabase($config);
+  }
+  catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+  }
+
+  if (isset($_GET['listid'])) {
+    echo "<h4>" . $db->getListName($_GET['listid']) . "</h4>";
+    echo "<table class='table table-condensed'>";
+    foreach($db->getItemsFromList($_GET['listid']) as $row) {
+      echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
+              " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
+              $row['itemid'] . "\"><span class=\"glyphicon glyphicon-trash\">
+              </span></a></td></tr>";
     }
+  }
+  else {
+    echo "<h4>" . $db->getListName($listid) . "</h4>";
+  echo "<table class='table table-condensed'>";
+    foreach($db->getItemsFromList($listid) as $row) {
+      echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
+              " " . $row['unit'] . "</td><td><a href=&apos;remove.php?itemid=" . 
+              $row['itemid'] . "&apos;><span class=&apos;glyphicon glyphicon-trash&apos;>
+              </span></a></td></tr>";
+    }
+  }
+  echo "</table>";
+}
+
+# get access list
+function getAccessList($listid) {
+    try {
+    require 'config.php';
+    $db = new KissDatabase($config);
+  }
+  catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+  }
+
+  echo "<h4>Access List</h4><ul>";
+
+  if (isset($_GET['listid'])) {
+    foreach($db->getAccessList($_GET['listid']) as $row) {
+      echo "<li>" . $row['username'] . "</li>";
+    }
+  }
+  else {
+    foreach($db->getAccessList($listid) as $row) {
+      echo "<li>" . $row['username'] . "</li>";
+    }
+  }
+
+  echo "</ul>";
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,6 +80,7 @@
     <title>KISS - Lists</title>
     <!-- Bootstrap core CSS -->
     <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
     <link href="lists.css" rel="stylesheet">
   </head>
 
@@ -44,7 +108,7 @@
 
   <div id="list">
     <div id="listContent">
-      <?php echo getListContent(true, $listid); ?>
+      <?php getListContent($listid); ?>
       <!-- list generated here -->
     </div>
     <div id="listForms">
@@ -54,16 +118,16 @@
 
   <div id="accessList">
     <div id="accessContent">
-      <?php echo getAccessList($listid); ?>
+      <?php getAccessList($listid); ?>
     </div>
     <div id="accessForms">
       <?php addEditors($listid); ?>
     </div>
   </div>
 
-    <!-- Javascript -->
-    <script src="generateLists.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="./bootstrap/js/js/bootstrap.min.js"></script>
+  <!-- Javascript -->
+  <script src="generateLists.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="./bootstrap/js/js/bootstrap.min.js"></script>
   </body>
 </html>

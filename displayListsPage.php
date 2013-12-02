@@ -34,8 +34,10 @@ function getLists($user) {
 function editList($listid) {
   echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
-            <label class=\"sr-only\" for=\"itemName\"></label>
-              <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
+          <div class=\"span2\">
+              <label class=\"sr-only\" for=\"itemName\"></label>
+                <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
+            </div>
           </div>
           <br />
           <div class=\"form-group\">

@@ -16,6 +16,15 @@ if (isset($_GET['itemid'])) {
 		echo "ERROR: " . $e->getmessage();
 	}
 }
+elseif (isset($_GET['user'])) {
+	try {
+		$db = new KissDatabase($config);
+		$db->removeUserAccess($_GET['listid'], $_GET['user']);
+	} catch(Exception $e) {
+		echo "ERROR: " . $e->getmessage();
+	}
+	header("location:./lists.php?listid=".$_GET['listid']);
+}
 elseif (isset($_GET['listid'])) {
 	try {
 		$db = new KissDatabase($config);
@@ -25,5 +34,4 @@ elseif (isset($_GET['listid'])) {
 	}
 }
 
-header("location:./lists.php");
 ?>

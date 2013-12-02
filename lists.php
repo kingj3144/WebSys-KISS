@@ -63,8 +63,8 @@ function getAccessList($listid) {
     foreach($db->getAccessList($_GET['listid']) as $row) {
       $username = "<li>" . $row['username'];
       if ($_SESSION['username'] != $row['username']) {
-        $username .= "<a href='remove.php?username=" . $row['username'] . 
-                      "&listid=" . $_GET['listid'] . "'><i class='icon-trash'>
+        $username .= "<a href='remove.php?user=" . $row['username'] . "&listid=" 
+                      . $_GET['listid'] . "'><i class='icon-trash'>
                       </i></a></td></tr>";
       }
       $username .= "</li>";
@@ -75,7 +75,7 @@ function getAccessList($listid) {
     foreach($db->getAccessList($listid) as $row) {
       $username = "<li>" . $row['username'];
       if ($_SESSION['username'] != $row['username']) {
-        $username .= "<a href='remove.php?username=" . $row['username'] . 
+        $username .= "<a href='remove.php?user=" . $row['username'] . 
                       "&listid=" . $listid . "'><i class='icon-trash'>
                       </i></a></td></tr>";
       }

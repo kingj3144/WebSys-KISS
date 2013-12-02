@@ -110,8 +110,11 @@
     <!-- Custom styles for this template -->
     <link href="resources/css/bootstrap/signin.css" rel="stylesheet" />
 		
-		<!-- Master style sheet for the page -->
-		<link href="resources/css/master.css" rel="stylesheet" />
+    <!-- Master style sheet for the page -->
+    <link href="resources/css/master.css" rel="stylesheet" />
+    
+    <!-- Flavicon for the page. -->
+    <link rel="icon" type="image/png" href="resources/css/images/logo.png" />
   </head>
 
   <body>

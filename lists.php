@@ -27,8 +27,8 @@ function getListContent($listid) {
     foreach($db->getItemsFromList($_GET['listid']) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
               " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
-              $row['itemid'] . "\"><i class=\"icon-trash\">
-              </i></a></td></tr>";
+              $row['itemid'] . "&listid=" . $_GET['listid'] . "\">
+              <i class=\"icon-trash\"></i></a></td></tr>";
     }
   } 
   else {
@@ -40,8 +40,8 @@ function getListContent($listid) {
     foreach($db->getItemsFromList($listid) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
               " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
-              $row['itemid'] . "\"><i class=\"icon-trash\">
-              </i></a></td></tr>";
+              $row['itemid'] . "&listid=" . $listid . "\">
+              <i class=\"icon-trash\"></i></a></td></tr>";
     }
   }
   echo "</table>";

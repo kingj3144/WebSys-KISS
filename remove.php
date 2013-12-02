@@ -15,6 +15,7 @@ if (isset($_GET['itemid'])) {
 	} catch(Exception $e) {
 		echo "ERROR: " . $e->getmessage();
 	}
+	header("location:./lists.php?listid=".$_GET['listid']);
 }
 elseif (isset($_GET['user'])) {
 	try {
@@ -32,6 +33,7 @@ elseif (isset($_GET['listid'])) {
 	} catch(Exception $e) {
 		echo "ERROR: " . $e->getmessage();
 	}
+	header("location:./lists.php");
 }
 
 ?>

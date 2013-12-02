@@ -33,7 +33,7 @@ if(isset($_POST['addItem'])) {
 } elseif (isset($_POST['addList'])) {
 	try {		
 		$db = new KissDatabase($config);
-		$db->newList($_SESSION['username'], $_POST['listName']);
+		$_POST['listid'] = $db->newList($_SESSION['username'], $_POST['listName']);
 	} catch(Exception $e) {
 			echo "ERROR: " . $e->getmessage();
 	}

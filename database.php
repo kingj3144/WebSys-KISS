@@ -259,7 +259,11 @@
 
 		public function deletelist($listid) {
 			if ($this->conn != NULL) {
-				$query = $this->conn->prepare("DELETE FROM `lists` WHERE `listid`='$listid';");
+
+				$query = $this->conn->prepare(
+					"DELETE FROM `listitems` WHERE `listid`='$listid';
+					DELETE FROM `listaccess` WHERE `listid`='$listid';
+					DELETE FROM `lists` WHERE `listid`='$listid';");
 				if(!$query){
 					if($this->config['debug'] = 'on'){
 						throw new Exception($query->errorInfo());

@@ -54,8 +54,10 @@ function getListContent($first, $listid) {
   }
 
   foreach($db->getItemsFromList($listid) as $row) {
-    $list .= "<tr><td>" . $row['item'] . "</td><td>" . 
-          $row['quantity'] . " " . $row['unit'] . "</td></tr>";
+    $list .= "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
+            " " . $row['unit'] . "</td><td><a href='remove.php?itemid=" . 
+            $row['itemid'] . "'><span class='glyphicon glyphicon-trash'>
+            </span></a></td></tr>";
   }
   $list .= "</table>";
   return $list;

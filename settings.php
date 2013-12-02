@@ -58,7 +58,7 @@
                 <label for="emailInput" class="span1"> Email: </label>
                 <input type="text" id="emailInput" name="email" value="<?php echo $_SESSION['email'] ?>" >
                 <br>
-                <div class="span1">Username: </div> <?php echo $_SESSION['username'] ?>
+                <div class="span2">Username: </div> <?php echo $_SESSION['username'] ?>
                 <br>
                 <div class="span1"></div><input type="submit" class="btn btn-default" name="changeSettings" value="Change">
               </div>

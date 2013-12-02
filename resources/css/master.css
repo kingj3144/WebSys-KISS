@@ -4,6 +4,7 @@
 }
 body {
 		background-image: url('images/wood-grain2.jpg');
+		background-repeat:no-repeat;
 		background-size: 100%;
 }
 .sign-in {

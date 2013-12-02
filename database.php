@@ -436,5 +436,20 @@
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}	
 		}
+
+		public function isOwner($username, $listid) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM lists WHERE `username`='$username' AND `listid`='$listid'");
+				$query->execute();
+				$result = $query->fetch();
+				if($result != NULL){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
 	}
 ?>

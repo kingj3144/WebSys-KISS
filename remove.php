@@ -29,7 +29,11 @@ elseif (isset($_GET['user'])) {
 elseif (isset($_GET['listid'])) {
 	try {
 		$db = new KissDatabase($config);
-		$db->deletelist($_GET['listid']);
+		if($db->isOwner($_SESSION['username']), $_GET['listid']) {
+			$db->deletelist($_GET['listid']);
+		} else {
+			$db->removeUserAccess($_GET['listid'], $_SESSION['username']);
+		}
 	} catch(Exception $e) {
 		echo "ERROR: " . $e->getmessage();
 	}

@@ -38,5 +38,5 @@ if(isset($_POST['addItem'])) {
 			echo "ERROR: " . $e->getmessage();
 	}
 }
-header("location:./lists.php?listid=$_POST['listid']");
+header("location:./lists.php?listid=" .$_POST['listid'] );
 ?>

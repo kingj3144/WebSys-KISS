@@ -19,22 +19,28 @@ function getListContent($listid) {
   }
 
   if (isset($_GET['listid'])) {
-    echo "<h4>" . $db->getListName($_GET['listid']) . "</h4>";
+    echo "<h4>" . $db->getListName($_GET['listid']) .
+          "<a href=\"remove.php?listid=" . $_GET['listid'] . "\">
+          <span class=\"glyphicon glyphicon-trash\"></span></a></h4>";
     echo "<table class='table table-condensed'>";
+
     foreach($db->getItemsFromList($_GET['listid']) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
               " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
               $row['itemid'] . "\"><span class=\"glyphicon glyphicon-trash\">
               </span></a></td></tr>";
     }
-  }
+  } 
   else {
-    echo "<h4>" . $db->getListName($listid) . "</h4>";
-  echo "<table class='table table-condensed'>";
+    echo "<h4>" . $db->getListName($listid) . 
+          "<a href=\"remove.php?listid=" . $listid. "\">
+          <span class=\"glyphicon glyphicon-trash\"></span></a></h4>";
+    echo "<table class='table table-condensed'>";
+
     foreach($db->getItemsFromList($listid) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
-              " " . $row['unit'] . "</td><td><a href=&apos;remove.php?itemid=" . 
-              $row['itemid'] . "&apos;><span class=&apos;glyphicon glyphicon-trash&apos;>
+              " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
+              $row['itemid'] . "\"><span class=\"glyphicon glyphicon-trash\">
               </span></a></td></tr>";
     }
   }

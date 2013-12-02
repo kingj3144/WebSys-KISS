@@ -16,6 +16,14 @@ if (isset($_GET['itemid'])) {
 		echo "ERROR: " . $e->getmessage();
 	}
 }
+elseif (isset($_GET['listid'])) {
+	try {
+		$db = new KissDatabase($config);
+		$db->deletelist($_GET['listid']);
+	} catch(Exception $e) {
+		echo "ERROR: " . $e->getmessage();
+	}
+}
 
 header("location:./lists.php");
 ?>

@@ -8,8 +8,22 @@
     require_once "displayListsPage.php";
     require_once "config.php";
     require_once "database.php";
-    $db = new KissDatabase($config);
-    // CHANGE to session username
+    try {
+      $db = new KissDatabase($config);
+      // CHANGE to session username
+      if (isset($_POST['changeSettings'])){
+        if(isset($_POST['name']) && $_POST['name'] != $_SESSION['name']){
+          $db->updateName($_SESSION['username'], $_POST['name']);
+          $_SESSION['name'] = $_POST['name'];
+        }
+        if(isset($_POST['email']) && $_POST['email'] != $_SESSION['email']){
+          $db->updateEmail($_SESSION['username'], $_POST['email']);
+          $_SESSION['email'] = $_POST['email'];
+        }
+      }
+    } catch (Execption $e) {
+      echo "ERROR: " . $e->getmessage();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,20 +46,21 @@
       <li class="active"><a href="./settings.php">Settings</a></li>
       <li><a href="./logout.php">Logout</a></li>
     </ul>
+    <div class="content">
+      <div class="settings">
+        <form class="form-inline" role="form" action="settings.php" method="post">
+          Name:
+          <input type="text" name="name" value="<?php echo $_SESSION['name'] ?>" >
+          <br>
+          Email:
+          <input type="text" name="email" value="<?php echo $_SESSION['email'] ?>" >
+          <br>
+          Username: <?php echo $_SESSION['username'] ?>
+          <br>
+          <input type="submit" class="btn btn-default" name="changeSettings" value="Change">
+        </form>
 
-    <div class="settings">
-      <form>
-        Name:
-        <input type="text" name="name" value="<?php echo $_SESSION['name'] ?>" >
-        <br>
-        Email:
-        <input type="text" name="email" value="<?php echo $_SESSION['email'] ?>" >
-        <br>
-        Username: <?php echo $_SESSION['username'] ?>
-        <br>
-        <input type="submit" name="changeSettings" value="Change">
-      </form>
-
+      </div>
     </div>
 
     <!-- Javascript -->

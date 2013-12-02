@@ -419,7 +419,7 @@
 			}
 		}
 
-		public function updateUserEmail($username, $email) {
+		public function updateEmail($username, $email) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("UPDATE `users` SET `email`='$email' WHERE `username`='$username'");
 				$query->execute();
@@ -428,7 +428,7 @@
 			}	
 		}
 
-		public function updateUserName($username, $name) {
+		public function updateName($username, $name) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("UPDATE `users` SET `name`='$name' WHERE `username`='$username'");
 				$query->execute();

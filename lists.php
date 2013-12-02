@@ -111,44 +111,44 @@ function getAccessList($listid) {
       <li><a href="./settings.php">Settings</a></li>
       <li><a href="./logout.php">Logout</a></li>
     </ul>
+    <div class="content">
+      <div id="menu" class="row">  
+        <div class="span2">  
+          <ul class="nav nav-pills nav-stacked">
+          <?php require_once "displayListsPage.php";
+                require_once "config.php";
+                require_once "database.php";
+                $db = new KissDatabase($config);
+                // CHANGE to session username
+                $listid = getLists($_SESSION['username']); 
+                if(isset($_GET['listid'])) {
+                  $listid = $_GET['listid'];
+                }
+                ?>
+          </ul>
+          <?php addNewList(); ?>
+        </div>
+      </div>
 
-    <div id="menu" class="row">  
-      <div class="span2">  
-        <ul class="nav nav-pills nav-stacked">
-        <?php require_once "displayListsPage.php";
-              require_once "config.php";
-              require_once "database.php";
-              $db = new KissDatabase($config);
-              // CHANGE to session username
-              $listid = getLists($_SESSION['username']); 
-              if(isset($_GET['listid'])) {
-                $listid = $_GET['listid'];
-              }
-              ?>
-        </ul>
-        <?php addNewList(); ?>
+    <div id="list">
+      <div id="listContent">
+        <?php getListContent($listid); ?>
+        <!-- list generated here -->
+      </div>
+      <div id="listForms">
+        <?php editList($listid); ?>
       </div>
     </div>
 
-  <div id="list">
-    <div id="listContent">
-      <?php getListContent($listid); ?>
-      <!-- list generated here -->
-    </div>
-    <div id="listForms">
-      <?php editList($listid); ?>
-    </div>
-  </div>
-
-  <div id="accessList">
-    <div id="accessContent">
-      <?php getAccessList($listid); ?>
-    </div>
-    <div id="accessForms">
-      <?php addEditors($listid); ?>
+    <div id="accessList">
+      <div id="accessContent">
+        <?php getAccessList($listid); ?>
+      </div>
+      <div id="accessForms">
+        <?php addEditors($listid); ?>
+      </div>
     </div>
   </div>
-
   <!-- Javascript -->
   <script src="generateLists.js"></script>
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

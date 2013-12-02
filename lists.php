@@ -100,7 +100,7 @@ function getAccessList($listid) {
     <title>KISS - Lists</title>
     <!-- Bootstrap core CSS -->
     <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"> -->
     <link href="lists.css" rel="stylesheet">
   </head>
 

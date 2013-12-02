@@ -87,8 +87,8 @@ function getAccessList($listid) {
   <body>
     <ul class="nav nav-tabs">
       <li><div id="logo"><img src="list.png" alt="KISS" /></div></li>
-      <li class="active"><a href="#">Lists</a></li>
-      <li><a href="#">Settings</a></li>
+      <li class="active"><a href="./lists.php">Lists</a></li>
+      <li><a href="./settings.php">Settings</a></li>
       <li><a href="./logout.php">Logout</a></li>
     </ul>
 

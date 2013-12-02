@@ -37,16 +37,21 @@ function editList($listid) {
             <label class=\"sr-only\" for=\"itemName\"></label>
               <input type=\"text\" class=\"form-control input-normal\" id=\"itemName\" name=\"itemName\" placeholder=\"Item Name\">
           </div>
+          <br />
           <div class=\"form-group\">
-            <label class=\"sr-only\" for=\"quantity\"></label>
-            <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" name=\"quantity\" placeholder=\"Quantity\" min=\"0\">
+            <div class=\"span2\">
+              <label class=\"sr-only\" for=\"quantity\"></label>
+              <input type=\"number\" class=\"form-control input-small\" id=\"quantity\" name=\"quantity\" placeholder=\"Quantity\" min=\"0\">
 
-            <label class=\"sr-only\" for=\"unit\"></label>
-            <input type=\"text\" class=\"form-control input-small\" id=\"unit\" name=\"unit\" placeholder=\"Unit\">
+              <label class=\"sr-only\" for=\"unit\"></label>
+              <input type=\"text\" class=\"form-control input-small\" id=\"unit\" name=\"unit\" placeholder=\"Unit\">
+
+            </div>
 
             <label class=\"sr-only\" for=\"listid\"></label>
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
           </div>
+          <br />
           <div class=\"buttonPos-item\">
             <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
           </div>

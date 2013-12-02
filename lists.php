@@ -21,27 +21,27 @@ function getListContent($listid) {
   if (isset($_GET['listid'])) {
     echo "<h4>" . $db->getListName($_GET['listid']) .
           "<a href=\"remove.php?listid=" . $_GET['listid'] . "\">
-          <span class=\"glyphicon glyphicon-trash\"></span></a></h4>";
+          <i class=\"icon-trash\"></i></a></h4>";
     echo "<table class='table table-condensed'>";
 
     foreach($db->getItemsFromList($_GET['listid']) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
               " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
-              $row['itemid'] . "\"><span class=\"glyphicon glyphicon-trash\">
-              </span></a></td></tr>";
+              $row['itemid'] . "\"><i class=\"icon-trash\">
+              </i></a></td></tr>";
     }
   } 
   else {
     echo "<h4>" . $db->getListName($listid) . 
           "<a href=\"remove.php?listid=" . $listid. "\">
-          <span class=\"glyphicon glyphicon-trash\"></span></a></h4>";
+          <i class=\"icon-trash\"></i></a></h4>";
     echo "<table class='table table-condensed'>";
 
     foreach($db->getItemsFromList($listid) as $row) {
       echo "<tr><td>" . $row['item'] . "</td><td>" . $row['quantity'] . 
               " " . $row['unit'] . "</td><td><a href=\"remove.php?itemid=" . 
-              $row['itemid'] . "\"><span class=\"glyphicon glyphicon-trash\">
-              </span></a></td></tr>";
+              $row['itemid'] . "\"><i class=\"icon-trash\">
+              </i></a></td></tr>";
     }
   }
   echo "</table>";
@@ -61,12 +61,26 @@ function getAccessList($listid) {
 
   if (isset($_GET['listid'])) {
     foreach($db->getAccessList($_GET['listid']) as $row) {
-      echo "<li>" . $row['username'] . "</li>";
+      $username = "<li>" . $row['username'];
+      if ($_SESSION['username'] != $row['username']) {
+        $username .= "<a href='remove.php?username=" . $row['username'] . 
+                      "&listid=" . $_GET['listid'] . "'><i class='icon-trash'>
+                      </i></a></td></tr>";
+      }
+      $username .= "</li>";
+      echo $username;
     }
   }
   else {
     foreach($db->getAccessList($listid) as $row) {
-      echo "<li>" . $row['username'] . "</li>";
+      $username = "<li>" . $row['username'];
+      if ($_SESSION['username'] != $row['username']) {
+        $username .= "<a href='remove.php?username=" . $row['username'] . 
+                      "&listid=" . $listid . "'><i class='icon-trash'>
+                      </i></a></td></tr>";
+      }
+      $username .= "</li>";
+      echo $username;
     }
   }
 

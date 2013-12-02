@@ -1,4 +1,4 @@
-<?php
+<?php 
 // if (session_status() == PHP_SESSION_NONE) {
     session_start();
     // }
@@ -47,19 +47,24 @@
       <li><a href="./logout.php">Logout</a></li>
     </ul>
     <div class="content">
-      <div class="settings">
-        <form class="form-inline" role="form" action="settings.php" method="post">
-          Name:
-          <input type="text" name="name" value="<?php echo $_SESSION['name'] ?>" >
-          <br>
-          Email:
-          <input type="text" name="email" value="<?php echo $_SESSION['email'] ?>" >
-          <br>
-          Username: <?php echo $_SESSION['username'] ?>
-          <br>
-          <input type="submit" class="btn btn-default" name="changeSettings" value="Change">
-        </form>
-
+      <div class="row">
+        <div class="span5">
+          <div class="settings">
+            <form class="form-inline" role="form" action="settings.php" method="post">
+              <div class="form-group">
+                <label for="nameInput" class="span1"> Name: </label> 
+                <input type="text" id="nameInput" name="name" value="<?php echo $_SESSION['name'] ?>" >
+                <br>
+                <label for="emailInput" class="span1"> Email: </label>
+                <input type="text" id="emailInput" name="email" value="<?php echo $_SESSION['email'] ?>" >
+                <br>
+                <div class="span1">Username: </div> <?php echo $_SESSION['username'] ?>
+                <br>
+                <div class="span1"></div><input type="submit" class="btn btn-default" name="changeSettings" value="Change">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 

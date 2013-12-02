@@ -6,9 +6,9 @@
 	require_once 'database.php';
 	require 'config.php';
 
-	if (session_status() == PHP_SESSION_NONE) {
+	// if (session_status() == PHP_SESSION_NONE) {
 		session_start();
-    }
+    // }
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     	header("location:./index.php");
     }

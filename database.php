@@ -1,13 +1,13 @@
 <?php 
-	const DATABASE_CONNECTION_ERROR = "Not connected to the database";
-	const USER_CREATION_ERROR = "User could not be created";
-	const USER_NOT_FOUND_ERROR = "User could not be found";
-	const USER_NOT_DELTED_ERROR = "User could not be deleted";
-	const SALT_NOT_FOUND_ERROR = "Salt could not be found";
-	const SALT_NOT_DELTED_ERROR = "Salt could not be deleted";
-	const LIST_CREATION_ERROR = "List could not be created";
-	const LIST_DELETE_ERROR = "List could not be deleted";
-	const USER_ACCESS_ERROR = "The users does not have access to do that";
+	define('DATABASE_CONNECTION_ERROR', "Not connected to the database");
+	define('USER_CREATION_ERROR', "User could not be created");
+	define('USER_NOT_FOUND_ERROR' , "User could not be found");
+	define('USER_NOT_DELTED_ERROR' , "User could not be deleted");
+	define('SALT_NOT_FOUND_ERROR' , "Salt could not be found");
+	define('SALT_NOT_DELTED_ERROR' , "Salt could not be deleted");
+	define('LIST_CREATION_ERROR' , "List could not be created");
+	define('LIST_DELETE_ERROR', "List could not be deleted");
+	define('USER_ACCESS_ERROR' , "The users does not have access to do that");
 
 	class KissDatabase
 	{
@@ -195,7 +195,8 @@
 				$query = $this->conn->prepare("SELECT salt FROM `users` WHERE username='$user'");
 				$query->execute();
 
-				$salt = $query->fetch()['salt'];
+				$s = $query->fetch();
+				$salt = $s['salt'];
 
 				if (isset($salt)) {
 					foreach ($this->conn->query("SELECT * FROM `users` WHERE username='$user'") as $return) {
@@ -284,7 +285,8 @@
 					}
 				} else {
 					$query->execute();
-					return $query->fetch()['listid'];
+					$r= $query->fetch();
+					return $r['listid'];
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
@@ -396,7 +398,8 @@
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT name FROM lists WHERE `listid`='$listid'");
 				$query->execute();
-				return $query->fetch()['name'];
+				$r = $query->fetch();
+				return $r['name'];
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);
 			}

@@ -54,8 +54,10 @@ function editList($listid) {
             <input type=\"hidden\" class=\"form-control input-small\" id=\"listid\" name=\"listid\" value=\"$listid\">
           </div>
           <br />
-          <div class=\"buttonPos-item\">
-            <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+          <div class=\"form-group\">
+            <div class=\"buttonPos-item\">
+              <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+            </div>
           </div>
         </form>";
 }

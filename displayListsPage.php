@@ -55,8 +55,10 @@ function editList($listid) {
           </div>
           <br />
           <div class=\"form-group\">
-            <div class=\"buttonPos-item\">
-              <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+            <div class=\"span2\">
+              <div class=\"buttonPos-item\">
+                <button type=\"submit\" class=\"btn btn-default\" name=\"addItem\">Add Item</button>
+              </div>
             </div>
           </div>
         </form>";

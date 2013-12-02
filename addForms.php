@@ -31,11 +31,15 @@ if(isset($_POST['addItem'])) {
 			echo "ERROR: " . $e->getmessage();
 	}
 } elseif (isset($_POST['addList'])) {
-	try {		
-		$db = new KissDatabase($config);
-		$_POST['listid'] = $db->newList($_SESSION['username'], $_POST['listName']);
-	} catch(Exception $e) {
-			echo "ERROR: " . $e->getmessage();
+	if(trim($_POST['listName']) != "") { 
+		try {		
+			$db = new KissDatabase($config);
+			$_POST['listid'] = $db->newList($_SESSION['username'], $_POST['listName']);
+		} catch(Exception $e) {
+				echo "ERROR: " . $e->getmessage();
+		}
+	} else {
+		header("location:./lists.php" );
 	}
 }
 header("location:./lists.php?listid=" .$_POST['listid'] );

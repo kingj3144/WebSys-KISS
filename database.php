@@ -16,6 +16,8 @@
 
 		private $config = NULL;
 
+		/** Constructs the database interface
+		  */
 		public function __construct($configArray) {
 			$this->config = $configArray;
 			$this->connect();
@@ -190,6 +192,11 @@
 		    return sprintf('$2a$%02d$', $rounds) . $salt;
 		}
 
+		/** Verifies that the user is in the database and that the provided password is correct
+		  * @param $user - username to check 
+		  * @param $password - Plaintext password to check
+		  * @return boolean of verification state
+		  */
 		public function verifyUser($user, $password) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT salt FROM `users` WHERE username='$user'");
@@ -237,6 +244,11 @@
 			}
 		}
 
+		/** Creates a new list with the provided users as the owner, also gives the owner access to this list
+		  * @param $username - Username of the creator/owner of the new list
+		  * @param $listname - Name that will be displayed when the list is accessed
+		  * @return the listid of the created list
+		  */
 		public function newList($username, $listname) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("INSERT INTO `lists` (`name`, `username`) VALUES ('$listname', '$username');");
@@ -257,6 +269,9 @@
 			}
 		}
 
+		/** Removes all items from a list, all access to the list, and removes the list
+		  * @param $listid - the listid of the list to be removed
+		  */
 		public function deletelist($listid) {
 			if ($this->conn != NULL) {
 
@@ -278,6 +293,11 @@
 			}
 		}
 
+		/** Given the username of the owner and the name of the list finds the listid
+		  * @param $username - the username of hte list owner
+		  * @param $listname - the name of the list
+		  * @return - the listid of the list if found
+		  */
 		public function getListByName($username, $listname) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT listid FROM `lists` WHERE `name`='$listname' and `username`='$username';");
@@ -297,6 +317,10 @@
 			}	
 		}
 
+		/** Gives a users access to a list
+		  * @param $listid - The listid of the list
+		  * @param $username - The username of the users to grant access
+		  */
 		public function addUserToList($listid, $username) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("INSERT INTO listaccess (`username`, `listid`) VALUES ('$username', '$listid')");
@@ -306,6 +330,11 @@
 			}	
 		}
 
+		/** Checks if a user ahs access to a list
+		  * @param $listid - The list to check
+		  * @param $username - The username to check
+		  * @return boolean - ture for access, false otherwise
+		  */
 		public function checkUserAccess($listid, $username) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT * FROM listaccess WHERE `username`='$username' AND `listid`='$listid'");
@@ -321,6 +350,10 @@
 			}	
 		}
 
+		/** Removes access to a list for a user
+		  * @param $listid - The list
+		  * @param $username - The username
+		  */
 		public function removeUserAccess($listid, $username) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("DELETE FROM `listaccess` WHERE `username`='$username' AND `listid`='$listid';");
@@ -338,7 +371,15 @@
 			}	
 		}
 
-		public function addItemToList($username, $item, $listid, $category, $quantity, $unit) {
+		/** Adds a new item to a given list, if that users has access to the list
+		  * @param $username - The username o f the user trying to add an item
+		  * @param $item - The name of the item to add
+		  * @param $listid - The listid of the list that will contain the item
+		  * @param $category - The category of the item, defaults to null
+		  * @param $quantity - The amount of the item
+		  * @param $unit - The unit to use when displaying the quantity
+		  */
+		public function addItemToList($username, $item, $listid, $category=NULL, $quantity, $unit) {
 			if ($this->conn != NULL) {
 				if($this->checkUserAccess($listid, $username)) {
 					$query = $this->conn->prepare("INSERT INTO `listitems` 
@@ -361,6 +402,9 @@
 			}	
 		}
 
+		/** Removes an item from a list based on itemid
+		  * @param $itemid - The itemid of the item to be removed
+		  */
 		public function removeItemFromList($itemid) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("DELETE FROM listitems WHERE `itemid`='$itemid';");
@@ -378,6 +422,10 @@
 			}
 		}
 
+		/** Get all the items from a given list
+		  * @param $listid - The listid number
+		  * @return array - an array with the results from the query
+		  */
 		public function getItemsFromList($listid) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT * FROM listitems WHERE `listid`='$listid'");
@@ -388,6 +436,10 @@
 			}
 		}
 
+		/** Gets all lists a user has access to
+		  * @param $username 
+		  * @return array - an array with the results from the query
+		  */
 		public function getListsFromUser($username) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT * FROM listaccess WHERE `username`='$username'");
@@ -398,6 +450,10 @@
 			}
 		}
 
+		/** Given the listid get the list name
+		  * @param $listid - The listid of the list
+		  * @return string - the name of the list
+		  */
 		public function getListName($listid) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT name FROM lists WHERE `listid`='$listid'");
@@ -409,6 +465,10 @@
 			}
 		}
 
+		/** Gets the usernames of all users who have access to the list
+		  * @param $listid - The listid of the list
+		  * @return array - array of usernames 
+		  */
 		public function getAccessList($listid) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT username FROM listaccess WHERE `listid`='$listid'");
@@ -419,6 +479,10 @@
 			}
 		}
 
+		/** Changes the user's email
+		  * @param $username - username of the user
+		  * @param $email - The new email for the user
+		  */
 		public function updateEmail($username, $email) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("UPDATE `users` SET `email`='$email' WHERE `username`='$username'");
@@ -428,6 +492,10 @@
 			}	
 		}
 
+		/** Changes the user's name
+		  * @param $username - username of the user
+		  * @param $name - The new name for the user
+		  */
 		public function updateName($username, $name) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("UPDATE `users` SET `name`='$name' WHERE `username`='$username'");
@@ -437,6 +505,11 @@
 			}	
 		}
 
+		/** Checks if a user is the owner of a list
+		  * @param $username - Username of the user
+		  * @param listid - The listid of the list
+		  * @return boolean - True if the uses is the owener, false otherwise
+		  */
 		public function isOwner($username, $listid) {
 			if ($this->conn != NULL) {
 				$query = $this->conn->prepare("SELECT * FROM lists WHERE `username`='$username' AND `listid`='$listid'");

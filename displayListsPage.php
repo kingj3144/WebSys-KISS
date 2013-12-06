@@ -31,6 +31,7 @@ function getLists($user) {
   return $firstList;
 }
 
+//Generate forms to edit lists
 function editList($listid) {
   echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">
@@ -78,6 +79,7 @@ function addEditors($listid) {
         </form>";
 }
 
+//Form to create a new list
 function addNewList() {
   echo "<form class=\"form-inline\" role=\"form\" action=\"addForms.php\" method=\"post\">
           <div class=\"form-group\">

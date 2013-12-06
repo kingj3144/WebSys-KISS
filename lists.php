@@ -119,7 +119,6 @@ function getAccessList($listid) {
                 require_once "config.php";
                 require_once "database.php";
                 $db = new KissDatabase($config);
-                // CHANGE to session username
                 $listid = getLists($_SESSION['username']); 
                 if(isset($_GET['listid'])) {
                   $listid = $_GET['listid'];

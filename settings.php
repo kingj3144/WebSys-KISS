@@ -56,6 +56,7 @@
       <li><div id="logo"><img src="list.png" alt="KISS" /></div></li>
       <li><a href="./lists.php">Lists</a></li>
       <li class="active"><a href="./settings.php">Settings</a></li>
+      <li><a href="./blog.php">Blog</a></li>
       <li><a href="./logout.php">Logout</a></li>
     </ul>
     <div class="content">

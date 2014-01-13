@@ -109,6 +109,7 @@ function getAccessList($listid) {
       <li><div id="logo"><img src="list.png" alt="KISS" /></div></li>
       <li class="active"><a href="./lists.php">Lists</a></li>
       <li><a href="./settings.php">Settings</a></li>
+      <li><a href="./blog.php">Blog</a></li>
       <li><a href="./logout.php">Logout</a></li>
     </ul>
     <div class="content">

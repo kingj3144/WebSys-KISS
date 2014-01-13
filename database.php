@@ -8,6 +8,7 @@
 	define('LIST_CREATION_ERROR' , "List could not be created");
 	define('LIST_DELETE_ERROR', "List could not be deleted");
 	define('USER_ACCESS_ERROR' , "The users does not have access to do that");
+	define('BLOGS_NOT_FOUND_ERROR', "No blogs found");
 
 	class KissDatabase
 	{
@@ -152,7 +153,7 @@
 
 		/** Adds a new user to the database
 		  * @param $name - the name of the new users as a string
-		  * @param $passworf - the users password as a plaintext string
+		  * @param $password - the users password as a plaintext string
 			* This will be used to generate a new user on the signup page
 		  */
 		public function addUser($username, $password, $name="", $email="") {
@@ -199,6 +200,31 @@
 		      $salt .= $salt_chars[array_rand($salt_chars)];
 		    }
 		    return sprintf('$2a$%02d$', $rounds) . $salt;
+		}
+
+		/** Changes the users password to a new one
+		  * @param $name - the name of the new users as a string
+		  * @param $password - the users password as a plaintext string
+		  */
+		public function changePasword($username, $password) {
+			if ($this->conn != NULL) {
+				try {	
+					$salt = $this->createSalt();
+					$hash = $this->hashPassword($password, $salt);
+					//TO DO: user name needs to be escaped of special characters
+					if ($this->conn->exec("UPDATE`users` SET `salt`='$salt', `password`='$hash' WHERE `user`='$username'") == 0) {
+						throw new Exception(USER_CREATION_ERROR);
+					}
+				} catch(PDOException $e) {
+					if ($this->config['debug'] == 'on') {
+						echo 'ERROR: ' . $e->getmessage();
+					} else {
+						throw $e;
+					}
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
 		}
 
 		/** Verifies that the user is in the database and that the provided password is correct
@@ -546,6 +572,21 @@
 					return true;
 				} else {
 					return false;
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}	
+		}
+
+		public function getRecentBlogPost($num) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM blog ORDER BY time DESC LIMIT=$num");
+				$query->execute();
+				$result = $query->fetch();
+				if($result != NULL){
+					return $result;
+				} else {
+					throw new Exception(BLOGS_NOT_FOUND_ERROR);
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);

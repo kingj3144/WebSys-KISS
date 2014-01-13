@@ -21,6 +21,18 @@
           $_SESSION['email'] = $_POST['email'];
         }
       }
+
+      if (isset($_POST['changePassword'])){
+        if(isset($_POST['oldPassword']) && $_POST['newPassword'] == $_SESSION['confirmPassword']){
+          if($db->verifyUser($_SESSION['username'], $_POST['oldPassword'])) {
+            $db->
+          }
+        }
+        if(isset($_POST['email']) && $_POST['email'] != $_SESSION['email']){
+          $db->updateEmail($_SESSION['username'], $_POST['email']);
+          $_SESSION['email'] = $_POST['email'];
+        }
+      }
     } catch (Execption $e) {
       echo "ERROR: " . $e->getmessage();
     }
@@ -61,6 +73,21 @@
                 <div class="span2">Username:  <?php echo $_SESSION['username'] ?> </div>
                 <br>
                 <div class="span1"></div><input type="submit" class="btn btn-default" name="changeSettings" value="Change">
+              </div>
+            </form>
+            <form class="form-inline" role="form" action="settings.php" method="post">
+              <div class="form-group">
+                Change Password
+                <label for="oldPassword" class="span1"> OldPassword: </label> 
+                <input type="text" id="oldPassword" name="oldPassword">
+                <br>
+                <label for="newPassword" class="span1"> Email: </label>
+                <input type="text" id="newPassword" name="newPassword">
+                <br>
+                <label for="confirmPassword" class="span1"> Email: </label>
+                <input type="text" id="confirmPassword" name="confirmPassword">
+                <br>
+                <div class="span1"></div><input type="submit" class="btn btn-default" name="changePassword" value="Change">
               </div>
             </form>
           </div>

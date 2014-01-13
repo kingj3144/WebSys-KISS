@@ -59,6 +59,7 @@
 						salt VARCHAR(64) NOT NULL,
 						name VARCHAR(32), 
 						email VARCHAR(32)
+						isAdmin BOOLEAN NOT NULL DEFAULT 0,
 						) COLLATE utf8_unicode_ci");
 
 					$this->conn->exec("CREATE TABLE IF NOT EXISTS lists (
@@ -87,7 +88,15 @@
 						FOREIGN KEY(username) REFERENCES users(username),
 						FOREIGN KEY(listid) REFERENCES lists(listid)
 						) COLLATE utf8_unicode_ci");
-					
+
+					$this->conn->exec("CREATE TABLE IF NOT EXISTS blog ( 
+						blogid INT PRIMARY KEY,
+						username VARCHAR(32) NOT NULL,
+						message TEXT,
+						time DATETIME DEFAULT CURRENT_TIMESTAMP,
+						FOREIGN KEY(username) REFERENCES users(username),
+						) COLLATE utf8_unicode_ci");
+
 				} catch(PDOException $e) {
 					if ($this->config['debug'] == 'on') {
 						echo 'ERROR: ' . $e->getmessage();
@@ -221,6 +230,24 @@
 					}
 				} else {
 					throw new Exception(SALT_NOT_FOUND_ERROR);
+				}
+			} else {
+				throw new Exception(DATABASE_CONNECTION_ERROR);
+			}
+		}
+
+		/** Function removes a user and their associated salt from the database
+		  * @param $username - the username of the uesr to be removed
+		  */
+		public function isAdmin($username) {
+			if ($this->conn != NULL) {
+				$query = $this->conn->prepare("SELECT * FROM `users` WHERE username='$user' AND admin=1");
+				$query->execute();
+				$a = $query->fetch();
+				if($a) {
+					return True;
+				} else {
+					return False;
 				}
 			} else {
 				throw new Exception(DATABASE_CONNECTION_ERROR);

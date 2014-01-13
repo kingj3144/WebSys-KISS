@@ -236,8 +236,8 @@
 			}
 		}
 
-		/** Function removes a user and their associated salt from the database
-		  * @param $username - the username of the uesr to be removed
+		/** Function checks is the users has administrative privileges
+		  * @param $username - the username of the user to be removed
 		  */
 		public function isAdmin($username) {
 			if ($this->conn != NULL) {
@@ -255,7 +255,7 @@
 		}
 
 		/** Function removes a user and their associated salt from the database
-		  * @param $username - the username of the uesr to be removed
+		  * @param $username - the username of the user to be removed
 		  */
 		public function removeUser($username) {
 			if ($this->conn != NULL) {
